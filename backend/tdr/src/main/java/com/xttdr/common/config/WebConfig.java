@@ -17,15 +17,15 @@ public class WebConfig implements WebMvcConfigurer {
                 .addPathPatterns("/**")
                 .excludePathPatterns("/login", "/register", "/imserver/**", "/files/**", "/static/**");
     }
-
+    /*在这里添加访问静态资源的路径*/
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/files/**").addResourceLocations("file:"+System.getProperty("user.dir")+"/files/");
+    }
     @Bean
     public AuthInterceptor authInterceptor() {
         return new AuthInterceptor();
     }
 
-    /*在这里添加访问静态资源的路径*/
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/files/**").addResourceLocations("classpath:/files/");
-    }
+
 }
