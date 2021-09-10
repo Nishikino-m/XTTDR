@@ -4,10 +4,25 @@
              :default-active="path"
              router
     >
-
-      <div style="text-align: center;margin-top: 50px">
-        <el-avatar :size="100" :src="circleUrl"></el-avatar>
+<!--      更换头像的前后端交互没写-->
+      <div style="text-align: center;margin-top: 50px;margin-bottom: 30px">
+        <el-upload
+            class="avatar-uploader"
+            action=""
+            :show-file-list="false"
+            :on-success="handleAvatarSuccess"
+            :before-upload="beforeAvatarUpload"
+        >
+          <img v-if="imgUrl" :src="imgUrl" class="avatar" />
+          <el-avatar v-else :size="100" :src="circleUrl"></el-avatar>
+        </el-upload>
+<!--        显示个人信息的div-->
+        <div class="aside-information">
+        {{"name:"+user.id}}
+        </div>
       </div>
+
+
       <el-sub-menu index="1">
         <template #title><i class="el-icon-message"></i>课程管理</template>
         <el-menu-item index="/course">所有课程</el-menu-item>
@@ -51,12 +66,33 @@
 
 export default {
   name: "Aside",
+  props: ['user'],
   data() {
     return {
-      user: {},
+
       path: this.$route.path,   // 设置默认高亮的菜单
       circleUrl: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
+      imgUrl:"",
+      filesUploadUrl: "http://localhost:9090/courseMaterial/add"
     }
+  },
+  methods: {
+    handleAvatarSuccess(res, file) {
+      this.imgUrl = URL.createObjectURL(file.raw)
+    },
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === 'image/jpeg'
+      const isLt2M = file.size / 1024 / 1024 < 2
+
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG 格式!')
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!')
+      }
+      return isJPG && isLt2M
+    },
+
   }
 }
 </script>
@@ -92,6 +128,11 @@ export default {
     width: 178px;
     height: 178px;
     display: block;
+  }
+  .aside-information {
+    font-size: smaller;
+    color: rgba(74, 56, 155, 0.83);
+    font-family: Consolas;
   }
 
 

@@ -7,25 +7,27 @@
       action=""
       :on-preview="handlePreview"
       :on-remove="handleRemove"
+      :on-change="handleChange"
       :http-request="httpRequest"
       :file-list="fileList"
       :auto-upload="false"
   >
     <template #trigger>
-      <el-button size="small" type="primary">选取文件</el-button>
+      <el-button size="small" type="primary" >
+       选取文件</el-button>
     </template>
     <el-button
         style="margin-left: 10px;"
         size="small"
         type="success"
+        :disabled="fileList.length == 0 ? true : false"
         @click="submitUpload"
-    >上传文件
+    >上传文件{{fileList.length}}
     </el-button>
   </el-upload>
-
   <el-table :data="tableData"  v-loading="loading" stripe style="width: 100%;margin-top: 10px;">
     <el-table-column prop="name" label="文件名" width="360"> </el-table-column>
-    <el-table-column prop="createdTime" label="日期" width="360"> </el-table-column>
+    <el-table-column prop="createdTime" label="日期" width="360" :formatter="dateFormat"> </el-table-column>
     <el-table-column prop="teacherId" label="上传者"> </el-table-column>
     <el-table-column label="操作">
       <template #default="scope">
@@ -72,7 +74,8 @@ export default {
       total: 0,
       tableData: [],
       filesUploadUrl: "http://localhost:9090/courseMaterial/add",
-      ids: []
+      ids: [],
+      isSelect: true
     }
   },
   created() {
@@ -113,6 +116,7 @@ export default {
         this.load() // 刷新表格的数据
       })
     },
+
     submitUpload() {
       this.$refs.upload.submit()
     },
@@ -121,6 +125,9 @@ export default {
     },
     handlePreview(file) {
       console.log(file)
+    },
+    handleChange(file, fileList) {
+      this.fileList = fileList
     },
     handleDownload(path,fileName){
       request.get('/files/download/'+path+fileName, {responseType: 'blob'}).then(res => {
@@ -167,7 +174,23 @@ export default {
     handleCurrentChange(pageNum) {  // 改变当前页码触发
       this.currentPage = pageNum
       this.load()
-    }
+    },
+    dateFormat(row,column){
+      var t=new Date(row.createdTime);//row 表示一行数据, updateTime 表示要格式化的字段名称
+      var year=t.getFullYear(),
+          month=t.getMonth()+1,
+          day=t.getDate(),
+          hour=t.getHours(),
+          min=t.getMinutes(),
+          sec=t.getSeconds();
+      var newTime=year+'-'+
+          (month<10?'0'+month:month)+'-'+
+          (day<10?'0'+day:day)+' '+
+          (hour<10?'0'+hour:hour)+':'+
+          (min<10?'0'+min:min)+':'+
+          (sec<10?'0'+sec:sec);
+      return newTime;
+      },
   }
 }
 </script>

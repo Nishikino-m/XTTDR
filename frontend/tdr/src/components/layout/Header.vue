@@ -3,35 +3,39 @@
     <img :src = "logoUrl" height="70" width="170" />
     <div style="width: 400px;margin-top: 20px; padding-left: 30px; font-weight: bold; color:#4a389b">学通天地人&nbsp;&nbsp;在线学习平台</div>
     <div style="flex: 1"></div>
-    <div style="width: 100px ;margin-top: 20px; ">
-      <el-dropdown >
-        <span class="el-dropdown-link" style="font-size: 20px" >
-          {{ userType[user.id=="student"? 0:(user.id=="teacher"?1:2)] }}<i class="el-icon-arrow-down el-icon--right"></i>
-        </span>
-        <template #dropdown>
-          <el-dropdown-menu >
-            <el-dropdown-item  @click="$router.push('/person')">个人信息</el-dropdown-item>
-            <el-dropdown-item @click="$router.push('/login')">退出系统</el-dropdown-item>
-          </el-dropdown-menu>
-        </template>
-      </el-dropdown>
-      
+
+    <div style="width: 300px;margin-top: 30px; color:rgba(74,56,155,0.75);font-size: 20px;" @click="ch"> 欢迎登录！
+
+      {{ user.id + "(" +usersType[user.userType=="student"? 0:(user.userType=="teacher"?1:2)] +")"}}</div>
+    <div style="width: 120px ;margin-top: 20px;margin-right: 10px " >
+
+          <el-button type="danger" icon="el-icon-back"  @click="$router.push('/login')">Exit</el-button>
+
     </div>
+
   </div>
 </template>
 
 <script>
+
 export default {
   name: "Header",
   props: ['user'],
   data() {
     return{
       logoUrl: require("../../assets/title.png"),
-      userType: ["学生","教师","管理员"]
+      usersType: ["学生","教师","管理员"]
     }
 
   },
   created() {
+
+  },
+  methods:{
+    ch(){
+      console.log("Header")
+      console.log(this.user)
+    },
   }
 }
 </script>
@@ -43,4 +47,11 @@ div >>>{
 div >>> .el-dropdown{
   color: #4a389b;
 }
+.el-dropdown-link {
+  cursor: pointer;
+}
+.el-icon-arrow-down {
+  font-size: 12px;
+}
+
 </style>

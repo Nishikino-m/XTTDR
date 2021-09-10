@@ -3,8 +3,8 @@
 
   <el-table :data="tableData"  v-loading="loading" stripe style="width: 100%;margin-top: 10px;">
     <el-table-column prop="name" label="作业名称" width="360"> </el-table-column>
-    <el-table-column prop="createdTime" label="起始日期" width="360"> </el-table-column>
-    <el-table-column prop="deadline" label="结束日期"> </el-table-column>
+    <el-table-column prop="createdTime" label="起始日期" width="360" :formatter="dateFormat"> </el-table-column>
+    <el-table-column prop="deadline" label="结束日期" :formatter="dateFormat"> </el-table-column>
     <el-table-column label="操作">
       <template #default="scope">
         <el-button size="mini" type="primary" @click="details(scope.row)">查看</el-button>
@@ -251,7 +251,17 @@ export default {
     handleCurrentChange(pageNum) {  // 改变当前页码触发
       this.currentPage = pageNum
       this.load()
-    }
+    },
+    dateFormat(row,column){
+      var t=new Date(row.createdTime);
+      var year=t.getFullYear(),
+          month=t.getMonth()+1,
+          day=t.getDate();
+      var newTime=year+'-'+
+          (month<10?'0'+month:month)+'-'+
+          (day<10?'0'+day:day)+' ';
+      return newTime;
+    },
   }
 }
 </script>

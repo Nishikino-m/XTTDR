@@ -4,7 +4,7 @@
   <el-header><Header :user="user"/></el-header>
     <el-container>
 
-      <Aside/>
+      <Aside :user="user"/>
 
       <el-container>
 
@@ -33,7 +33,7 @@ export default {
   components: {
     Header,
     Aside,
-    Footer
+    Footer,
   },
   data() {
     return {

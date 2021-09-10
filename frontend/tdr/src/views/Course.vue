@@ -1,5 +1,6 @@
 <template>
   <div class="course-page">
+
     <el-row :gutter="0">
       <el-col :span="12"><el-button type="primary" @click="add">加入课程</el-button></el-col>
       <el-col :span="12">
@@ -19,6 +20,7 @@
           <el-button type="primary" class="enter" @click="enterCourse(it.courseId)">进入课程</el-button>
         </div>
       </el-card>
+
     </div>
     <el-pagination style="margin-top: 50px"
                    @size-change="handleSizeChange"
@@ -27,7 +29,7 @@
                    :page-sizes="[3, 6, 9]"
                    :page-size="pageSize"
                    layout="total, sizes, prev, pager, next, jumper"
-                   :total="total">
+                   :total="total" >
     </el-pagination>
   </div>
 
@@ -134,6 +136,12 @@ export default {
 </script>
 
 <style scoped>
+@import '../assets/css/style.css';
+div >>> {
+  font-family: "ok";
+
+}
+
 .course-page{
   text-align: center;
 }
@@ -154,12 +162,15 @@ export default {
   margin-top: 5px;
 }
 .box-card {
-  width: 400px;
+  width: 350px;
   height: 200px;
   margin: 20px;
 }
 .enter{
   position: absolute;
   right: 0;
+}
+.el-form-item{
+  font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
 }
 </style>
