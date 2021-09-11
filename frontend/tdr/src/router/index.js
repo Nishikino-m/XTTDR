@@ -8,7 +8,7 @@ const routes = [
     name: 'Layout',
     component: Layout,
     redirect: "/course",
-    children: [
+   children: [
       {
         path: '/course',
         name: 'course',
@@ -39,6 +39,11 @@ const routes = [
             path: '/coursePage/discuss',
             name: '/coursePage/discuss',
             component: () => import('@/views/CourseDiscuss')
+          },
+          {
+            path: '/coursePage/homeworkList',
+            name: 'homeworkList',
+            component: () => import('@/views/HomeworkList')
           }
         ]
       }
