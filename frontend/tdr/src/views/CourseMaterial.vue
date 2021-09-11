@@ -11,6 +11,7 @@
       :http-request="httpRequest"
       :file-list="fileList"
       :auto-upload="false"
+      :disabled="user.userType=='student'? true : false"
   >
     <template #trigger>
       <el-button size="small" type="primary" >

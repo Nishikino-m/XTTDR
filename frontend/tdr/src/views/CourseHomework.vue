@@ -4,9 +4,10 @@
   <el-table :data="tableData"  v-loading="loading" stripe style="width: 100%;margin-top: 10px;">
     <el-table-column prop="name" label="作业名称" width="360"> </el-table-column>
     <el-table-column prop="createdTime" label="起始日期" width="360" :formatter="dateFormat"> </el-table-column>
-    <el-table-column prop="deadline" label="结束日期" :formatter="dateFormat"> </el-table-column>
+    <el-table-column prop="deadline" label="结束日期" :formatter="deadlineFormat"> </el-table-column>
     <el-table-column label="操作">
       <template #default="scope">
+        <el-button-group>
         <el-button size="mini" type="primary" @click="details(scope.row)">查看</el-button>
         <el-button size="mini" v-if="user.userType !== 'student'" @click="handleEdit(scope.row)">编辑</el-button>
         <el-popconfirm title="确定删除吗？" @confirm="handleDelete(scope.row.homeworkId)" v-if="user.userType !== 'student'">
@@ -14,6 +15,7 @@
             <el-button size="mini" type="danger">删除</el-button>
           </template>
         </el-popconfirm>
+        </el-button-group>
       </template>
     </el-table-column>
   </el-table>
@@ -254,10 +256,22 @@ export default {
       this.load()
     },
     dateFormat(row,column){
-      var t=new Date(row.createdTime);
+      var t=new Date(row.createdTime);//row 表示一行数据, updateTime 表示要格式化的字段名称
       var year=t.getFullYear(),
           month=t.getMonth()+1,
-          day=t.getDate();
+          day=t.getDate(),
+          hour=t.getHours();
+      var newTime=year+'-'+
+          (month<10?'0'+month:month)+'-'+
+          (day<10?'0'+day:day)+' ';
+      return newTime;
+    },
+    deadlineFormat(row,column){
+      var t=new Date(row.deadline);//row 表示一行数据, updateTime 表示要格式化的字段名称
+      var year=t.getFullYear(),
+          month=t.getMonth()+1,
+          day=t.getDate(),
+          hour=t.getHours();
       var newTime=year+'-'+
           (month<10?'0'+month:month)+'-'+
           (day<10?'0'+day:day)+' ';

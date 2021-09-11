@@ -40,10 +40,13 @@ public class LoginServiceImpl implements LoginService{
 
     @Override
     public Result<?> register(Account account) {
+        System.out.println("Now Register: Account="+account.toString());
         QueryWrapper<Account> accountQueryWrapper = new QueryWrapper<>();
         accountQueryWrapper.eq("id", account.getId());
         Account resAccount = accountMapper.selectOne(accountQueryWrapper);
+        //目前没作用
         if(resAccount!=null){
+            System.out.println("用户名重复");
             return Result.error("-1", "用户名重复");
         }
         QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();

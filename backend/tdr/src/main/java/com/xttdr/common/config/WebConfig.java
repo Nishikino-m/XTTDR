@@ -15,7 +15,7 @@ public class WebConfig implements WebMvcConfigurer {
 
         registry.addInterceptor(authInterceptor())
                 .addPathPatterns("/**")
-                .excludePathPatterns("/login", "/register", "/imserver/**", "/files/**", "/static/**");
+                .excludePathPatterns("/login", "/register", "/files/**");
     }
     /*在这里添加访问静态资源的路径*/
     @Override

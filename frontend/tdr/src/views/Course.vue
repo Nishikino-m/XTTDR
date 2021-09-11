@@ -2,11 +2,13 @@
   <div class="course-page">
 
     <el-row :gutter="0">
-      <el-col :span="12"><el-button type="primary" @click="add">加入课程</el-button></el-col>
-      <el-col :span="12">
+      <el-col :span="4"><el-button type="primary" @click="add">加入课程</el-button>
+        <el-button type="primary" @click="createCourse">新建课程</el-button></el-col>
+
+      <el-col :span="20">
         <div style="margin: 10px 0">
-          <el-input v-model="search" placeholder="请输入关键字" style="width: 20%" clearable></el-input>
-          <el-button type="primary" style="margin-left: 5px" @click="load">查询</el-button>
+          <el-input v-model="search" placeholder="请输入关键字" style="width: 30%" clearable></el-input>
+          <el-button type="primary" style="margin-left: 5px" @click="load">查询课程</el-button>
         </div>
       </el-col>
     </el-row>
