@@ -7,10 +7,9 @@
     <el-table-column prop="deadline" align="center" label="结束日期" :formatter="deadlineFormat" width="330"> </el-table-column>
     <el-table-column label="操作" align="center" width="360">
       <template #default="scope">
-        <el-button size="mini"  @click="details(scope.row)">查看</el-button>
+        <el-button size="mini" type="primary" v-if="user.userType == 'student'" @click="details(scope.row)" >提交</el-button>
         <el-button size="mini" type="success" v-if="user.userType !== 'student'" @click="handleEdit(scope.row)">编辑</el-button>
         <el-button size="mini" type="primary" v-if="user.userType !== 'student'" @click="homeworkList(scope.row.homeworkId)">批阅</el-button>
-        <el-button size="mini" type="primary" v-if="user.userType == 'student'" @click="homeworkList(scope.row.homeworkId)">提交</el-button>
         <el-popconfirm title="确定删除吗？" @confirm="handleDelete(scope.row.homeworkId)" v-if="user.userType !== 'student'">
           <template #reference>
             <el-button size="mini" type="danger">删除</el-button>
@@ -54,7 +53,6 @@
 
   <el-dialog title="详情" v-model="vis" width="50%">
     <el-upload
-        v-if="user.userType !== 'student'"
         class="upload-demo"
         ref="upload"
         multiple
@@ -62,6 +60,7 @@
         :limit="1"
         :on-preview="handlePreview"
         :on-remove="handleRemove"
+        :on-change="handleChange"
         :http-request="httpRequest"
         :file-list="fileList"
         :auto-upload="false"
@@ -74,7 +73,8 @@
           size="small"
           type="success"
           @click="submitUpload"
-      >提交上传
+          :disabled="fileList.length == 0 ? true : false"
+      >提交上传{{fileList.length}}
       </el-button>
     </el-upload>
     <el-card style="margin-top: 10px">
@@ -172,6 +172,9 @@ export default {
     },
     handlePreview(file) {
       console.log(file)
+    },
+    handleChange(file, fileList) {
+      this.fileList = fileList
     },
     handleadd(){
       this.dialogVisible = true
