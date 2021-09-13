@@ -2,14 +2,14 @@
   <div>
    <el-container>
   <el-header><Header :user="user"/></el-header>
-    <el-container>
+    <el-container >
 
-      <Aside :user="user"/>
+      <Aside :user="user" />
 
       <el-container>
 
 
-        <el-main>
+        <el-main >
           <router-view style="flex: 1"/>
         </el-main>
 

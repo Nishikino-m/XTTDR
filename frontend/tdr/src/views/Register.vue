@@ -1,10 +1,10 @@
 <template>
-  <div class="login" style="width: 100%; height: 100vh; overflow-x: hidden; " :style="bg" > <!--  加背景图片-->
-    <div style="width:30vw;height: 70vh; margin:9vh auto 9vh auto; ">
-      <div style="font-size: 30px; text-align: center; ">
+  <div class="login"  > <!--  加背景图片-->
+    <div class="login_card" >
+      <div style="font-size: 25px; text-align: center; ">
         <img :src="titleUrl" style="width:90%;height: 90%;margin-right: 10%" />
       </div>
-      <el-form ref="form" :model="form" size="normal" :rules="rules" >
+      <el-form ref="form" :model="form" size="small" :rules="rules" style="padding: 0 5%  0  5% ">
         <el-form-item prop="id" >
           <el-input  prefix-icon="el-icon-user-solid" v-model="form.id" placeholder="请输入账号"></el-input>
         </el-form-item>
@@ -19,14 +19,16 @@
         </el-form-item>
         <el-form-item>
           <div style="display: flex;justify-content: center;">
-            <el-input prefix-icon="el-icon-key" v-model="form.validCode" style="width: 50%;" placeholder="请输入验证码"></el-input>
-            <ValidCode @input="createValidCode" />
+            <el-input prefix-icon="el-icon-key"  v-model="form.validCode" style="width: 50%;margin-right: 5%" placeholder="请输入验证码"></el-input>
+            <div class="validCode">
+              <ValidCode @input="createValidCode" />
+            </div>
           </div>
         </el-form-item>
 
 
 
-        <div style="text-align: center;margin-bottom: 20px">
+        <div style="text-align: center;margin-bottom: 10px">
           <el-radio-group v-model="form.userType" fill="#7858C0">
             <el-radio-button label="student">学生</el-radio-button>
             <el-radio-button label="teacher">教师</el-radio-button>
@@ -35,10 +37,10 @@
         </div>
 
 
-        <el-form-item>
-          <el-button style="width: 100%" type="primary" @click="register">注册</el-button>
+        <el-form-item >
+          <el-button style="width: 100%;" size="normal"  type="primary" @click="register">注册</el-button>
         </el-form-item>
-        <el-form-item><el-button type="text" @click="$router.push('/login')">前往登录 >> </el-button></el-form-item>
+        <el-form-item><el-button type="text" style="margin-bottom: 1%" @click="$router.push('/login')" >前往登录 >> </el-button></el-form-item>
       </el-form>
 
     </div>

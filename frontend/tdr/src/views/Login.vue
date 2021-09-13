@@ -1,11 +1,11 @@
 <template>
-  <div class="login" style="width: 100%; height: 100vh; overflow-x: hidden; " :style="bg" > <!--  加背景图片-->
-    <div style="width:30vw;height: 70vh; margin:9vh auto 9vh auto; ">
+  <div class="login" style=" " > <!--  加背景图片-->
+    <div class="login_card">
       <div style="font-size: 30px; text-align: center; ">
         <img :src="titleUrl" style="width:90%;height: 90%;margin-right: 10%" />
 <!--        <p>欢迎登录</p>-->
       </div>
-      <el-form ref="form" :model="form" size="normal" :rules="rules" >
+      <el-form ref="form" :model="form" size="normal" :rules="rules" style="padding: 0 5%  3%  5% ">
         <el-form-item prop="id" >
           <el-input  prefix-icon="el-icon-user-solid" v-model="form.id" placeholder="请输入账号"></el-input>
         </el-form-item>
@@ -14,8 +14,11 @@
         </el-form-item>
         <el-form-item>
          <div style="display: flex;justify-content: center;">
-           <el-input prefix-icon="el-icon-key" v-model="form.validCode" style="width: 50%;" placeholder="请输入验证码"></el-input>
-           <ValidCode @input="createValidCode" />
+           <el-input prefix-icon="el-icon-key" v-model="form.validCode" style="width: 50%; margin-right: 5%" placeholder="请输入验证码"></el-input>
+           <div class="validCode">
+             <ValidCode @input="createValidCode" />
+           </div>
+
          </div>
         </el-form-item>
 

@@ -29,6 +29,7 @@ public class HomeworkServiceImpl implements HomeworkService{
 
     @Override
     public Result<?> submittedHomework(Integer pageNum, Integer pageSize, String homeworkId) {
+        System.out.println(pageNum+" "+pageSize+" "+homeworkId);
         QueryWrapper<DoHomework> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("homework_id",homeworkId);
         return Result.success(doHomeworkMapper.selectPage(new Page<DoHomework>(pageNum,pageSize),queryWrapper));

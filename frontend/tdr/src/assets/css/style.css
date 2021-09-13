@@ -13,17 +13,35 @@ li{
 a{
     text-decoration: none;
 }
+.login{
+    width: 100%;
+    height: 100vh;
+    overflow-x: hidden;
+    background: linear-gradient(to bottom ,rgb(104,82,199),rgb(118,76,173),#aba6dc);
+}
 .login .footer {
-    padding: 24px 15px;
-    margin: 10vh auto 0 auto;
+    padding: 20px 15px;
+
     font-size: 20px;
-    color: #8c939d;
+    color: #6a5ba8;
     /*width: 1000px;*/
-    background-color: rgba(255, 255, 255, 0.41);
+    background-color: rgba(255, 255, 255, 0.29);
+    box-shadow:0 -5px 10px 1px  #b5adda;
     text-align: center;
 }
 .login .input{
     height: 35px;
     background: #ffd04b;
     margin: 10px auto;
+}
+.login .login_card{
+    width:30vw;
+    background-color: rgba(255, 255, 255, 0.32);
+    margin:5vh auto 5vh auto;
+    box-shadow:0 5px 20px 1px  #b5adda;
+    border-radius: 14px;
+}
+.login .validCode{
+    background-color: rgba(255, 255, 255, 0.27);
+    border-radius: 5px;
 }

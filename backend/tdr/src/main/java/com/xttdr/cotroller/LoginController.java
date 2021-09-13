@@ -8,14 +8,6 @@ import com.xttdr.service.LoginServiceImpl;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-class Reg{
-    Account account;
-    String workId;
-    Reg(){
-        account=null;
-        workId="work";
-    }
-}
 
 @RestController
 public class LoginController {

@@ -3,7 +3,7 @@
 
     <el-row :gutter="0">
       <el-col :span="4"><el-button type="primary" @click="add">加入课程</el-button>
-        <el-button type="primary" @click="createCourse">新建课程</el-button></el-col>
+        <el-button type="primary" v-if="user.userType!=='student'" @click="createCourse">新建课程</el-button></el-col>
 
       <el-col :span="20">
         <div style="margin: 10px 0">
@@ -12,13 +12,13 @@
         </div>
       </el-col>
     </el-row>
-    <div class="course-card" v-loading="loading">
+    <div class="course-card" v-loading="loading" style="height: 60vh">
       <el-card  class="box-card" v-for="it in tableData">
         <div class="course-back">
           <img src="@/assets/img/course.svg" alt=""/>
         </div>
         <div class="course-bottom">
-          <span style="position: absolute;left: 0">{{it.name}}</span>
+          <span style="position: absolute;left: 0">{{it.name}} : {{it.teacherId}}</span>
           <el-button type="primary" class="enter" @click="enterCourse(it.courseId)">进入课程</el-button>
         </div>
       </el-card>

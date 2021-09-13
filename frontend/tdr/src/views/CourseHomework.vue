@@ -1,11 +1,11 @@
 <template>
   <el-button type="primary" @click="handleadd" v-if="user.userType !== 'student'">添加作业</el-button>
 
-  <el-table :data="tableData"  v-loading="loading" stripe style="width: 100%;margin-top: 10px;">
+  <el-table :data="tableData"  v-loading="loading" stripe style="width: 100%;margin-top: 10px; height: 60vh">
     <el-table-column prop="name" align="center" label="作业名称" width="240" > </el-table-column>
     <el-table-column prop="createdTime" align="center" label="起始日期" width="330" :formatter="deadlineFormat"> </el-table-column>
     <el-table-column prop="deadline" align="center" label="结束日期" :formatter="deadlineFormat" width="330"> </el-table-column>
-    <el-table-column label="操作" align="center" width="360">
+    <el-table-column label="操作" align="center">
       <template #default="scope">
         <el-button size="mini" type="primary" v-if="user.userType == 'student'" @click="details(scope.row)" >提交</el-button>
         <el-button size="mini" type="success" v-if="user.userType !== 'student'" @click="handleEdit(scope.row)">编辑</el-button>
@@ -77,9 +77,16 @@
       >提交上传{{fileList.length}}
       </el-button>
     </el-upload>
+
     <el-card style="margin-top: 10px">
       <div v-html="detail.content" style="min-height: 100px"></div>
     </el-card>
+
+    <template #footer>
+    <span class="dialog-footer">
+      <p class="footer" style="width: 100%;">提交之后无法更改噢</p>
+    </span>
+</template>
   </el-dialog>
 
 </template>
@@ -307,5 +314,8 @@ export default {
 </script>
 
 <style scoped>
+.footer{
+  color: #8c939d;
 
+}
 </style>

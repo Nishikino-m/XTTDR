@@ -14,6 +14,16 @@ const routes = [
         name: 'course',
         component: () => import('@/views/Course')
       },
+     {
+       path: '/exam',
+       name: 'exam',
+       component: () => import('@/views/Exam')
+     },
+     {
+       path: '/examEditor',
+       name: 'examEditor',
+       component: () => import('@/views/ExamEditor')
+     },
       {
         path: '/coursePage',
         name: '/coursePage',
@@ -44,6 +54,11 @@ const routes = [
             path: '/coursePage/homeworkList',
             name: 'homeworkList',
             component: () => import('@/views/HomeworkList')
+          },
+          {
+            path: '/coursePage/videoList',
+            name: 'videoList',
+            component: () => import('@/views/VideoList')
           }
         ]
       }
@@ -73,7 +88,7 @@ const router = createRouter({
 })
 
 // 限制某些页面禁止未登录访问
-let limitPagePath = ["/course"]
+let limitPagePath = ["/course","/exam"]
 
 router.beforeEach((to, from, next) => {
   if (limitPagePath.includes(to.path)) {
