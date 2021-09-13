@@ -1,5 +1,5 @@
 <template>
-  <div class="login" style=" " > <!--  加背景图片-->
+  <div class="login" > <!--  加背景图片-->
     <div class="login_card">
       <div style="font-size: 30px; text-align: center; ">
         <img :src="titleUrl" style="width:90%;height: 90%;margin-right: 10%" />
