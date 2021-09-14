@@ -14,11 +14,11 @@
     </el-col>
   </el-row>
     <el-divider></el-divider>
-  <el-table :data="tableData"  v-loading="loading" stripe style="width: 100%; height: 60vh">
+  <el-table :data="tableData"  v-loading="loading" stripe style="width: 100%; height: 55vh">
     <el-table-column prop="name" align="center" label="考试名" width="240"> </el-table-column>
     <el-table-column prop="courseId" align="center" label="考试课程" width="240"> </el-table-column>
     <el-table-column prop="createdTime" align="center" label="开考时间" width="240" :formatter="dateFormat"> </el-table-column>
-    <el-table-column prop="lastTime" align="center" label="考试时长" width="210" > </el-table-column>
+    <el-table-column prop="lastTime" align="center" label="考试时长" width="90" > </el-table-column>
     <el-table-column prop="teacherId" align="center" label="创建者"> </el-table-column>
     <el-table-column align="center" label="操作">
       <template #default="scope">

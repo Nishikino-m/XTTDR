@@ -45,3 +45,40 @@ a{
     background-color: rgba(255, 255, 255, 0.27);
     border-radius: 5px;
 }
+
+/*试卷的css*/
+.examEditor_page{
+    font-size: medium;
+}
+.examEditor_page .problem{
+    color: #4c4864;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.12),0 0 6px rgba(0,0,0,0.04);
+    margin: 5px;
+}
+.examEditor_page .problem .describes{
+    font-size: small;
+    background-color: #595760;
+    color: #f3f3fd;
+}
+.examEditor_page .problem .options{
+    margin: 10px;
+    text-align: center;
+}
+.examEditor_page .problem .answer{
+    color: rgb(61, 59, 79);
+}
+
+.examEditor_page .newproblem{
+    color: #241e42;
+    background-color: rgba(238, 239, 243, 0.44);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.12),0 0 6px rgba(0,0,0,0.04);
+}
+.examEditor_page .newproblem .describes{
+    margin: 10px;
+}
+.examEditor_page .newproblem .options{
+    margin: 10px;
+}
+.examEditor_page .newproblem .answer{
+    margin: 10px;
+}

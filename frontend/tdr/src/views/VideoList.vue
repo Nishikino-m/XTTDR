@@ -2,7 +2,7 @@
   <el-button type="success" @click="upload">上传视频</el-button>
   <el-table :data="tableData"  v-loading="loading" stripe style="width: 100%;margin-top: 10px;">
     <el-table-column prop="name" label="视频名称" width="360"> </el-table-column>
-    <el-table-column prop="createdTime" label="日期" width="360"> </el-table-column>
+    <el-table-column prop="createdTime" label="日期" width="360" :formatter="dateFormat"> </el-table-column>
     <el-table-column prop="seq" label="播放顺序" width="360"> </el-table-column>
     <el-table-column label="操作">
       <template #default="scope">
@@ -179,8 +179,19 @@ export default {
     handleCurrentChange(pageNum) {  // 改变当前页码触发
       this.currentPage = pageNum
       this.load()
-    }
-  }
+    },
+    dateFormat(row,column){
+      var t=new Date(row.createdTime);//row 表示一行数据, updateTime 表示要格式化的字段名称
+      var year=t.getFullYear(),
+          month=t.getMonth()+1,
+          day=t.getDate();
+      var newTime=year+'-'+
+          (month<10?'0'+month:month)+'-'+
+          (day<10?'0'+day:day);
+      return newTime;
+    },
+  },
+
 }
 </script>
 

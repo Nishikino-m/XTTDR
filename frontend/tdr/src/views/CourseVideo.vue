@@ -1,8 +1,8 @@
 <template>
-  <el-button size="mini" v-if="user.userType !== 'student'" @click="manageVideo">管理课程</el-button>
+  <el-button size="mini" v-if="user.userType !== 'student'" @click="manageVideo">管理课程视频</el-button>
   <el-row class="tac">
     <el-col :span="20" v-if="this.videoList.length !== 0">
-      <div class="player-container">
+      <div class="player-container" v-loading="loading">
         <vue3-video-player @play="your_method" :src="this.source"></vue3-video-player>
       </div>
     </el-col>
@@ -49,6 +49,7 @@ export default {
   },
   data () {
     return {
+      loading: false,
       user: {},
       videoList: [],
       source: 'https://media.vued.vanthink.cn/y2mate.com%20-%20sparkle_your_name_amv_K_7To_y9IAM_1080p.mp4'
@@ -56,11 +57,13 @@ export default {
   },
   methods: {
     getVideos(){
+      this.loading = true
       request.get('/video',{params:{courseId: this.courseId}}).then( res => {
         this.videoList = res.data
         if(this.videoList.length !== 0){
           this.source = this.videoList[0].path
         }
+        this.loading = false
       })
     },
     changeSource(path){

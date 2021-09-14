@@ -3,7 +3,7 @@
 
     <el-row :gutter="0">
       <el-col :span="4"><el-button type="primary" @click="add">加入课程</el-button>
-        <el-button type="primary" v-if="user.userType!=='student'" @click="createCourse">新建课程</el-button></el-col>
+        <el-button type="primary" v-if="user.userType!=='student'" @click="this.vis = true">新建课程</el-button></el-col>
 
       <el-col :span="20">
         <div style="margin: 10px 0">
@@ -48,7 +48,19 @@
       </span>
     </template>
   </el-dialog>
-
+  <el-dialog title="添加课程" v-model="this.vis" width="30%">
+    <el-form label-width="120px">
+      <el-form-item label="课程名称">
+        <el-input v-model="courseName" style="width: 80%"></el-input>
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="this.vis = false">取 消</el-button>
+        <el-button type="primary" @click="saveCourse">确 定</el-button>
+      </span>
+    </template>
+  </el-dialog>
 </template>
 
 <script>
@@ -62,6 +74,7 @@ export default {
       loading: true,
       form: {},
       dialogVisible: false,
+      vis: false,
       search: '',
       currentPage: 1,
       pageSize: 6,
@@ -69,7 +82,8 @@ export default {
       tableData: [],
       addStudyId: '',
       // filesUploadUrl: "http://" + window.server.filesUploadUrl + ":9090/files/upload",
-      ids: []
+      ids: [],
+     courseName: '',
     }
   },
   created() {
@@ -97,7 +111,7 @@ export default {
       this.dialogVisible = true
     },
     save(){
-      request.post("/course/addStudy", {params: {
+      request.post("/course/addStudy", null,{params: {
           addStudyId: this.addStudyId
         }
       }).then(res => {
@@ -114,6 +128,26 @@ export default {
         }
         this.load() // 刷新表格的数据
         this.dialogVisible = false  // 关闭弹窗
+      })
+    },
+    saveCourse(){
+      request.post("/course/add", null,{params: {
+          name: this.courseName
+        }
+      }).then(res => {
+        if (res.code === '0') {
+          this.$message({
+            type: "success",
+            message: "新建课堂成功"
+          })
+        } else {
+          this.$message({
+            type: "error",
+            message: res.msg
+          })
+        }
+        this.load() // 刷新表格的数据
+        this.vis = false  // 关闭弹窗
       })
     },
     enterCourse(courseId){
