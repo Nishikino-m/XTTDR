@@ -24,6 +24,12 @@ const routes = [
        name: 'examEditor',
        component: () => import('@/views/ExamEditor')
      },
+     {
+       path: '/examPaper',
+       name: 'examPaper',
+       component: () => import('@/views/ExamPaper')
+     },
+
       {
         path: '/coursePage',
         name: '/coursePage',

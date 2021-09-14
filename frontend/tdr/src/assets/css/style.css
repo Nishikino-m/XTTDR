@@ -82,3 +82,24 @@ a{
 .examEditor_page .newproblem .answer{
     margin: 10px;
 }
+
+.exam{
+    font-size: medium;
+}
+.exam .problem{
+    color: #4c4864;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.12),0 0 6px rgba(0,0,0,0.04);
+    margin: 5px;
+}
+.exam .problem .describes{
+    font-size: small;
+    background-color: #595760;
+    color: #f3f3fd;
+}
+.exam .problem .options{
+    margin: 10px;
+    text-align: center;
+}
+.exam .problem .answer{
+    color: rgb(61, 59, 79);
+}

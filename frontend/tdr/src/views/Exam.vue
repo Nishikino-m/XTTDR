@@ -22,7 +22,7 @@
     <el-table-column prop="teacherId" align="center" label="创建者"> </el-table-column>
     <el-table-column align="center" label="操作">
       <template #default="scope">
-        <el-button  type="primary" v-if="user.userType == 'student'"  @click="enterExam(scope.row)">进入考试</el-button>
+        <el-button  type="primary" v-if="user.userType == 'student'"  @click="enterExam(scope.row.examId)">进入考试</el-button>
         <el-button v-if="user.userType !== 'student'" @click="editPaper(scope.row.examId)">编辑试卷</el-button>
         <el-popconfirm title="确定删除吗？" @confirm="handleDelete(scope.row.examId)" v-if="user.userType !== 'student'">
           <template #reference>
@@ -211,6 +211,17 @@ export default {
         }
       })
     },
+    enterExam(examId){
+      this.$store.commit('setExamId',examId)
+
+      this.$router.push({
+
+        name: 'examPaper',
+        params: {
+          examId: examId
+        }
+      })
+    },
     save() {
         console.log("ADD")
          let userStr = sessionStorage.getItem("user") || "{}"
@@ -277,6 +288,7 @@ export default {
     createExam(){
         this.dialogVisible = true
         this.form = {}
+
         // this.$nextTick(() => {
         //   // 关联弹窗里面的div，new一个 editor对象
         //   if (!editor) {
