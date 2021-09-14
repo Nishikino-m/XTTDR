@@ -22,7 +22,7 @@
     <el-table-column prop="teacherId" align="center" label="创建者"> </el-table-column>
     <el-table-column align="center" label="操作">
       <template #default="scope">
-        <el-button  type="primary" v-if="user.userType == 'student'"  @click="enterExam(scope.row.examId)">进入考试</el-button>
+        <el-button  type="primary" v-if="user.userType == 'student'"  @click="enterExam(scope.row)">进入考试</el-button>
         <el-button v-if="user.userType !== 'student'" @click="editPaper(scope.row.examId)">编辑试卷</el-button>
         <el-popconfirm title="确定删除吗？" @confirm="handleDelete(scope.row.examId)" v-if="user.userType !== 'student'">
           <template #reference>
@@ -121,13 +121,16 @@ export default {
       tableData: [],
       filesUploadUrl: "http://localhost:9090/exam/add",//后端内容
       ids: [],
-      isSelect: true
+      isSelect: true,
+      courseList:[],//这个是打算记录当前用户拥有课程的数组
     }
   },
   created() {
     let userStr = sessionStorage.getItem("user")
     this.user = JSON.parse(userStr)
     this.load()
+
+    //希望可以返回该教师所有的课程,然后就可以把课程编号的input改成选择框了
   },
   computed: {
     examId() {
@@ -211,23 +214,27 @@ export default {
         }
       })
     },
-    enterExam(examId){
-      this.$store.commit('setExamId',examId)
-
+    enterExam(row){
+      this.$store.commit('setExamId',row.examId)
+      let start = row.createdTime;
+      let timeLength = row.lastTime;
+      var endingTime = start +timeLength*3600;
+      console.log(this.dateFormat2(start))
+      console.log(this.dateFormat2(endingTime))
       this.$router.push({
 
         name: 'examPaper',
         params: {
-          examId: examId
+          examId: row.examId,
+          endingTime:endingTime
         }
       })
     },
     save() {
-        console.log("ADD")
          let userStr = sessionStorage.getItem("user") || "{}"
          let user = JSON.parse(userStr)
          this.form.teacherId = user.id
-         this.form.courseId = this.courseId
+         //this.form.courseId = this.courseId
          request.post("/exam/add", this.form).then(res => {
           if (res.code === '0') {
             this.$message({
@@ -246,7 +253,7 @@ export default {
     },
     load() {
       this.loading = true
-      request.get("/courseMaterial/1", {//这里也是后端相关
+      request.get("/courseMaterial/1", {//这里也是后端相关，加载考试列表
         params: {
           pageNum: this.currentPage,
           pageSize: this.pageSize,
@@ -284,11 +291,27 @@ export default {
           (sec<10?'0'+sec:sec);
       return newTime;
     },
-
+    dateFormat2(curTime){
+      var t=new Date(curTime);//row 表示一行数据, updateTime 表示要格式化的字段名称
+      var year=t.getFullYear(),
+          month=t.getMonth()+1,
+          day=t.getDate(),
+          hour=t.getHours(),
+          min=t.getMinutes(),
+          sec=t.getSeconds();
+      var newTime=year+'-'+
+          (month<10?'0'+month:month)+'-'+
+          (day<10?'0'+day:day)+' '+
+          (hour<10?'0'+hour:hour)+':'+
+          (min<10?'0'+min:min)+':'+
+          (sec<10?'0'+sec:sec);
+      return newTime;
+    },
     createExam(){
         this.dialogVisible = true
         this.form = {}
 
+      //后端相关了
         // this.$nextTick(() => {
         //   // 关联弹窗里面的div，new一个 editor对象
         //   if (!editor) {

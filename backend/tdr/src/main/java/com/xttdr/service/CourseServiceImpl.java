@@ -95,4 +95,8 @@ public class CourseServiceImpl implements CourseService{
         }
         return Result.error("-1","课程库中没有该课程");
     }
+    @Override
+    public Integer courseCount(String id) {
+        return doCourseMapper.courseCount(id);
+    }
 }
