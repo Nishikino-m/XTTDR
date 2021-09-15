@@ -65,7 +65,7 @@ public class ExamServiceImpl implements ExamService {
         List<Problem> problems = (List<Problem>)(problemService.getProblemByExamId(exam.getExamId()).getData());
         Integer score = 0;
         for(int i = 0; i < answer.size(); i++)
-            if(answer.get(i).equals(problems.get(i).getAnwser()))
+            if(answer.get(i).equals(problems.get(i).getAnswer()))
                 score++;
         doExam.setScore(score*10);
         QueryWrapper<DoExam> queryWrapper = new QueryWrapper<DoExam>().eq("exam_id", doExam.getExamId()).eq("id",doExam.getId());

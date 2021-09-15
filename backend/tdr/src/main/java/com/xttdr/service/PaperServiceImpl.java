@@ -123,7 +123,7 @@ public class PaperServiceImpl implements PaperService{
                     case 3: cell.setCellValue(tmp.getOptionB()); break;
                     case 4: cell.setCellValue(tmp.getOptionC()); break;
                     case 5: cell.setCellValue(tmp.getOptionD()); break;
-                    case 6: cell.setCellValue(tmp.getAnwser()); break;
+                    case 6: cell.setCellValue(tmp.getAnswer()); break;
                     case 7: cell.setCellValue(tmp.getParse()); break;
                 }
             }

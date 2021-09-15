@@ -110,7 +110,7 @@ public class ExamController extends BaseController{
         return paperService.addProblemById(paperId, problemId);
     }
 
-    @PostMapping("/paper/deleteProblem")
+    @PostMapping("/paper/delete")
     public Result<?> deleteProblemById(@RequestParam String paperId, @RequestParam String problemId){
         if(!getAccountId().equals(examService.getTeacherIdByPaperId(paperId).getData()))
             return Result.error("-1","无权限");

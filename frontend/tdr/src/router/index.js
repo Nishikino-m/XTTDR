@@ -29,7 +29,11 @@ const routes = [
        name: 'examPaper',
        component: () => import('@/views/ExamPaper')
      },
-
+     {
+       path: '/findPaper',
+       name: 'findPaper',
+       component: () => import('@/views/FindPaper')
+     },
       {
         path: '/coursePage',
         name: '/coursePage',

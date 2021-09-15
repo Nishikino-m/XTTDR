@@ -2,6 +2,10 @@
   <div class="examEditor_page">
       <el-button type="primary" @click="handleadd2">从题库添加题目</el-button>
       <el-button type="primary" @click="handleadd">从文件导入题目</el-button>
+    <div style="text-align: right">
+      <el-button type="primary"  @click="backToAll" >考试列表</el-button>
+      <el-button type="primary"  @click="exportPaper" >导出试卷</el-button>
+    </div>
 
       <div style="padding: 20px; color: #888">
         <div>
@@ -68,7 +72,7 @@
 
 
 
-          <div style="text-align: right; padding: 10px"><el-button type="primary" @click="save">保存试卷</el-button></div>
+          <div style="text-align: right; padding: 10px"><el-button type="primary" @click="handOut">保存并发布试卷</el-button></div>
         </div>
       </div>
 
@@ -235,8 +239,10 @@ export default {
   },
   methods: {
     loadProblems() {
-      request.get("/exam/problems",{//后端相关
+      request.get("/exam/problems/exam",{//后端相关
         params: {
+          pageNum: this.currentPage,
+          pageSize: this.pageSize,
           examId: this.examId
         }}).then(res => {
         this.problems = res.data.records;
@@ -261,7 +267,7 @@ export default {
         });
         return;
       }
-      request.post("/exam/addProblem", this.entity).then(res => {
+      request.post("/exam/add",this.entity,this.examId ).then(res => {
         if (res.code === '0') {
           this.$message({
             message: "添加成功",
@@ -277,8 +283,8 @@ export default {
         this.loadProblems();
       })
     },
-    delete(id) {
-      request.post("/exam/problems/delete/" + id).then(res => {
+    delete(id) {//id是题目的id
+      request.post("/exam/paper/delete" + this.examId,id).then(res => {
         this.$message({
           message: "删除成功",
           type: "success"
@@ -320,7 +326,7 @@ export default {
         }
       })
     },
-    //从文件添加
+    //从文件添加---------这里没有和后端对接（因为我不会）
     submitUpload() {
       this.$refs.upload.submit()
     },
@@ -347,7 +353,7 @@ export default {
     //从题库添加
     submit(){
         //this.checkedProblems存的是选中的题号
-      request.post('/exam/'+this.examId,this.checkedProblems).then( res => {
+      request.post('/exam/paper/addProblem',this.examId,this.checkedProblems).then( res => {
         if(res.code === '0'){
           this.$message({
             type: "success",
@@ -361,7 +367,31 @@ export default {
       })
 
       this.loadProblems()
-    }
+    },
+    handOut(){
+      request.post("/exam/handout" ,this.examId).then(res => {
+        this.$message({
+          message: "发布成功",
+          type: "success"
+        });
+        this.backToAll()
+      })
+    },
+    backToAll(){
+      this.$router.push({
+        name: '/exam',
+
+      })
+    },
+    exportPaper(){
+      request.post("/exam/export/" + this.examId).then(res => {
+        this.$message({
+          message: "导出成功",
+          type: "success"
+        });
+        this.backToAll()
+      })
+    },
   }
 }
 </script>

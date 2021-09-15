@@ -146,11 +146,10 @@ export default {
       }
       this.score=0
       for (var i=0;i<this.problems.length;i++)
-      {
-        console.log("i="+i)
-        console.log(this.problems[i])
+      {//console.log("i="+i)
+        //console.log(this.problems[i])
         if(this.chooseAnswer[i]==this.problems[i].answer){
-          this.score++
+          this.score+=10
         }
 
       }
@@ -161,7 +160,15 @@ export default {
       })
 
       //这里需要和后端搞一下让数据传到数据库
-      request.post("/exam/doExams/judgeScore"+this.examId)
+      request.post("/exam/doExams/judgeScore",this.examId,this.score).then(
+          res => {
+            this.$message({
+              message:"提交成功！",
+              type:"success"
+            });
+            this.backToAll()
+          }
+      )
     },
     changeInput(){
       this.finishCount=0

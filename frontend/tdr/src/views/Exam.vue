@@ -2,7 +2,7 @@
   <div class="exam-page">
     <el-row :gutter="0" >
       <el-col :span="6" style="background-color: #ffffff">
-        <el-button v-if="user.userType!=='student'" style="margin: 10px 0;padding: 0 10px;" type="primary" @click="createExam">新建考试</el-button>
+        <el-button v-if="user.userType!=='student'" style="margin: 10px 0;padding: 0 10px;" type="primary" @click="this.dialogVisible = true">新建考试</el-button>
 
   </el-col>
 
@@ -23,7 +23,8 @@
     <el-table-column align="center" label="操作">
       <template #default="scope">
         <el-button  type="primary" v-if="user.userType == 'student'"  @click="enterExam(scope.row)">进入考试</el-button>
-        <el-button v-if="user.userType !== 'student'" @click="editPaper(scope.row.examId)">编辑试卷</el-button>
+        <el-button v-if="user.userType !== 'student' " @click="editPaper(scope.row.examId)">编辑试卷</el-button>
+        <el-button v-if="user.userType !== 'student'" @click="findPaper(scope.row.examId)">查看考试结果</el-button>
         <el-popconfirm title="确定删除吗？" @confirm="handleDelete(scope.row.examId)" v-if="user.userType !== 'student'">
           <template #reference>
             <el-button  type="danger">删除考试</el-button>
@@ -187,7 +188,7 @@ export default {
           }
       )
     },
-    handleDelete(id){
+    handleDelete(id){//删除考试
       request.post('/exam/delete/'+id).then(res => {
             if(res.code === '0'){
               this.$message({
@@ -209,6 +210,17 @@ export default {
       this.$router.push({
 
         name: 'examEditor',
+        params: {
+          examId: examId
+        }
+      })
+    },
+    findPaper(examId){
+      this.$store.commit('setExamId',examId)
+
+      this.$router.push({
+
+        name: 'paperList',
         params: {
           examId: examId
         }
@@ -251,19 +263,35 @@ export default {
           this.dialogVisible = false  // 关闭弹窗
         })
     },
-    load() {
+    load() {//加载考试列表
       this.loading = true
-      request.get("/exam/all", {//这里也是后端相关，加载考试列表
-        params: {
-          pageNum: this.currentPage,
-          pageSize: this.pageSize,
-          search: this.search
-        }
-      }).then(res => {
-        this.loading = false
-        this.tableData = res.data.records
-        this.total = res.data.total
-      })
+      if(this.user.userType == student){
+        request.get("/exam/doExams/all", {
+          params: {
+            pageNum: this.currentPage,
+            pageSize: this.pageSize,
+            search: this.search
+          }
+        }).then(res => {
+          this.loading = false
+          this.tableData = res.data.records
+          this.total = res.data.total
+        })
+      }
+      else{
+        request.get("/exam/all", {
+          params: {
+            pageNum: this.currentPage,
+            pageSize: this.pageSize,
+            search: this.search
+          }
+        }).then(res => {
+          this.loading = false
+          this.tableData = res.data.records
+          this.total = res.data.total
+        })
+      }
+
     },
 
 
@@ -307,22 +335,7 @@ export default {
           (sec<10?'0'+sec:sec);
       return newTime;
     },
-    createExam(){
-        this.dialogVisible = true
-        this.form = {}
 
-      //后端相关了
-        // this.$nextTick(() => {
-        //   // 关联弹窗里面的div，new一个 editor对象
-        //   if (!editor) {
-        //     editor = new E('#div1')
-        //     // 配置 server 接口地址
-        //     editor.config.uploadImgServer = 'http://localhost:9090/files/editor/upload'
-        //     editor.config.uploadFileName = "file"  // 设置上传参数名称
-        //     editor.create()
-        //   }
-        // })
-    },
   }
 }
 </script>

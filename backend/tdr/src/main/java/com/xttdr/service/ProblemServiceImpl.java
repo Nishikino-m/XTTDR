@@ -95,7 +95,7 @@ public class ProblemServiceImpl implements ProblemService{
                 problem.setOptionB(row.getCell(3).getStringCellValue());
                 problem.setOptionC(row.getCell(4).getStringCellValue());
                 problem.setOptionD(row.getCell(5).getStringCellValue());
-                problem.setAnwser(row.getCell(6).getStringCellValue());
+                problem.setAnswer(row.getCell(6).getStringCellValue());
                 problem.setParse(row.getCell(7).getStringCellValue());
                 addProblem(problem);
             }
