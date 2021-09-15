@@ -161,7 +161,7 @@ export default {
       })
 
       //这里需要和后端搞一下让数据传到数据库
-      request.post("/exam/submit"+this.examId)
+      request.post("/exam/doExams/judgeScore"+this.examId)
     },
     changeInput(){
       this.finishCount=0

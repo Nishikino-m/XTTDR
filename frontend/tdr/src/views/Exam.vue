@@ -235,7 +235,7 @@ export default {
          let user = JSON.parse(userStr)
          this.form.teacherId = user.id
          //this.form.courseId = this.courseId
-         request.post("/exam/add", this.form).then(res => {
+         request.post("/exam/add", this.form).then(res => {//不知道和后端的参数是否对应
           if (res.code === '0') {
             this.$message({
               type: "success",
@@ -253,7 +253,7 @@ export default {
     },
     load() {
       this.loading = true
-      request.get("/courseMaterial/1", {//这里也是后端相关，加载考试列表
+      request.get("/exam/all", {//这里也是后端相关，加载考试列表
         params: {
           pageNum: this.currentPage,
           pageSize: this.pageSize,
