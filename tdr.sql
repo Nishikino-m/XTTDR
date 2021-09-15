@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80023
 File Encoding         : 65001
 
-Date: 2021-09-14 11:32:12
+Date: 2021-09-14 19:19:13
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -46,9 +46,10 @@ CREATE TABLE `comment` (
   `COURSE_ID` varchar(60) DEFAULT NULL COMMENT '课程编号',
   `PARENT_ID` varchar(60) DEFAULT NULL,
   PRIMARY KEY (`COMMENT_ID`),
-  KEY `ID` (`ID`),
   KEY `parent_id` (`PARENT_ID`),
+  KEY `id` (`ID`),
   CONSTRAINT `comment_ibfk_1` FOREIGN KEY (`ID`) REFERENCES `account` (`ID`),
+  CONSTRAINT `id` FOREIGN KEY (`ID`) REFERENCES `account` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `parent_id` FOREIGN KEY (`PARENT_ID`) REFERENCES `comment` (`COMMENT_ID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='评论';
 
@@ -72,8 +73,9 @@ CREATE TABLE `course` (
   `TEACHER_ID` varchar(32) DEFAULT NULL COMMENT '教师账号',
   `CREATED_TIME` datetime DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`COURSE_ID`),
-  KEY `TEACHER_ID` (`TEACHER_ID`),
-  CONSTRAINT `course_ibfk_1` FOREIGN KEY (`TEACHER_ID`) REFERENCES `account` (`ID`)
+  KEY `teacher_id` (`TEACHER_ID`),
+  CONSTRAINT `course_ibfk_1` FOREIGN KEY (`TEACHER_ID`) REFERENCES `account` (`ID`),
+  CONSTRAINT `teacher_id` FOREIGN KEY (`TEACHER_ID`) REFERENCES `account` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='课程';
 
 -- ----------------------------
@@ -81,8 +83,9 @@ CREATE TABLE `course` (
 -- ----------------------------
 INSERT INTO `course` VALUES ('1', '课程1', 'teacher', '2021-09-04 14:55:35');
 INSERT INTO `course` VALUES ('2', '课程2', 'teacher', '2021-09-04 15:33:59');
-INSERT INTO `course` VALUES ('3', 'test', 'teacher', '2021-09-05 15:47:03');
 INSERT INTO `course` VALUES ('3969c962161c47f59596a84c32bd2cf8', 'kk', 'teacher', '2021-09-13 22:09:53');
+INSERT INTO `course` VALUES ('4389307617a54b489799e3902a84e2af', '云计算', 'teacher', '2021-09-14 11:33:22');
+INSERT INTO `course` VALUES ('f601433079d44ee6bc266b5420a021ce', '算法设计', 'teacher', '2021-09-14 15:33:48');
 INSERT INTO `course` VALUES ('f84afc1149864548a86284cb318cdb3a', '计算机网络', 'teacher', '2021-09-13 21:00:25');
 
 -- ----------------------------
@@ -97,10 +100,12 @@ CREATE TABLE `course_material` (
   `TEACHER_ID` varchar(32) DEFAULT NULL COMMENT '教师编号',
   `CREATED_TIME` datetime DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`MATERIAL_ID`),
-  KEY `TEACHER_ID` (`TEACHER_ID`),
-  KEY `COURSE_ID` (`COURSE_ID`),
+  KEY `teacher_id_del` (`TEACHER_ID`),
+  KEY `course_id_del` (`COURSE_ID`),
+  CONSTRAINT `course_id_del` FOREIGN KEY (`COURSE_ID`) REFERENCES `course` (`COURSE_ID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `course_material_ibfk_1` FOREIGN KEY (`TEACHER_ID`) REFERENCES `account` (`ID`),
-  CONSTRAINT `course_material_ibfk_2` FOREIGN KEY (`COURSE_ID`) REFERENCES `course` (`COURSE_ID`)
+  CONSTRAINT `course_material_ibfk_2` FOREIGN KEY (`COURSE_ID`) REFERENCES `course` (`COURSE_ID`),
+  CONSTRAINT `teacher_id_del` FOREIGN KEY (`TEACHER_ID`) REFERENCES `account` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='课程资料';
 
 -- ----------------------------
@@ -115,9 +120,10 @@ DROP TABLE IF EXISTS `docourse`;
 CREATE TABLE `docourse` (
   `COURSE_ID` varchar(32) DEFAULT NULL COMMENT '课程编号',
   `STUDENT_ID` varchar(32) DEFAULT NULL COMMENT '学生编号',
-  KEY `STUDENT_ID` (`STUDENT_ID`),
   KEY `do_course_id` (`COURSE_ID`),
+  KEY `do_student_id` (`STUDENT_ID`),
   CONSTRAINT `do_course_id` FOREIGN KEY (`COURSE_ID`) REFERENCES `course` (`COURSE_ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `do_student_id` FOREIGN KEY (`STUDENT_ID`) REFERENCES `account` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `docourse_ibfk_1` FOREIGN KEY (`COURSE_ID`) REFERENCES `course` (`COURSE_ID`),
   CONSTRAINT `docourse_ibfk_2` FOREIGN KEY (`STUDENT_ID`) REFERENCES `account` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='上课';
@@ -126,11 +132,12 @@ CREATE TABLE `docourse` (
 -- Records of docourse
 -- ----------------------------
 INSERT INTO `docourse` VALUES ('2', 'teacher');
-INSERT INTO `docourse` VALUES ('3', 'teacher');
 INSERT INTO `docourse` VALUES ('1', 'teacher');
 INSERT INTO `docourse` VALUES ('f84afc1149864548a86284cb318cdb3a', 'teacher');
 INSERT INTO `docourse` VALUES ('3969c962161c47f59596a84c32bd2cf8', 'teacher');
 INSERT INTO `docourse` VALUES ('1', 'student');
+INSERT INTO `docourse` VALUES ('4389307617a54b489799e3902a84e2af', 'teacher');
+INSERT INTO `docourse` VALUES ('f601433079d44ee6bc266b5420a021ce', 'teacher');
 
 -- ----------------------------
 -- Table structure for doexam
@@ -157,7 +164,10 @@ CREATE TABLE `dohomework` (
   `ID` varchar(32) DEFAULT NULL COMMENT '账号',
   `PATH` varchar(120) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '作业路径',
   `SCORE` decimal(24,6) DEFAULT NULL COMMENT '得分',
-  KEY `ID` (`ID`),
+  KEY `do_homework_studentid` (`ID`),
+  KEY `do_homework_id` (`HOMEWORK_ID`),
+  CONSTRAINT `do_homework_id` FOREIGN KEY (`HOMEWORK_ID`) REFERENCES `homework` (`HOMEWORK_ID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `do_homework_studentid` FOREIGN KEY (`ID`) REFERENCES `account` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `dohomework_ibfk_1` FOREIGN KEY (`ID`) REFERENCES `account` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='完成作业';
 
@@ -179,10 +189,12 @@ CREATE TABLE `exam` (
   `BEGINTIME` datetime DEFAULT NULL COMMENT '开始时间',
   `LASTTIME` varchar(60) DEFAULT NULL COMMENT '考试时长',
   PRIMARY KEY (`EXAM_ID`),
-  KEY `COURSE_ID` (`COURSE_ID`),
-  KEY `TEACHER_ID` (`TEACHER_ID`),
+  KEY `exam_course_id` (`COURSE_ID`),
+  KEY `exam_teacher_id` (`TEACHER_ID`),
+  CONSTRAINT `exam_course_id` FOREIGN KEY (`COURSE_ID`) REFERENCES `course` (`COURSE_ID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `exam_ibfk_1` FOREIGN KEY (`COURSE_ID`) REFERENCES `course` (`COURSE_ID`),
-  CONSTRAINT `exam_ibfk_2` FOREIGN KEY (`TEACHER_ID`) REFERENCES `account` (`ID`)
+  CONSTRAINT `exam_ibfk_2` FOREIGN KEY (`TEACHER_ID`) REFERENCES `account` (`ID`),
+  CONSTRAINT `exam_teacher_id` FOREIGN KEY (`TEACHER_ID`) REFERENCES `account` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='考试';
 
 -- ----------------------------
@@ -202,10 +214,12 @@ CREATE TABLE `homework` (
   `CONTENT` varchar(900) DEFAULT NULL COMMENT '作业内容',
   `COURSE_ID` varchar(32) DEFAULT NULL COMMENT '课程编号',
   PRIMARY KEY (`HOMEWORK_ID`),
-  KEY `COURSE_ID` (`COURSE_ID`),
-  KEY `TEACHER_ID` (`TEACHER_ID`),
+  KEY `course_id` (`COURSE_ID`),
+  KEY `homework_teacherid` (`TEACHER_ID`),
+  CONSTRAINT `course_id` FOREIGN KEY (`COURSE_ID`) REFERENCES `course` (`COURSE_ID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `homework_ibfk_1` FOREIGN KEY (`COURSE_ID`) REFERENCES `course` (`COURSE_ID`),
-  CONSTRAINT `homework_ibfk_2` FOREIGN KEY (`TEACHER_ID`) REFERENCES `account` (`ID`)
+  CONSTRAINT `homework_ibfk_2` FOREIGN KEY (`TEACHER_ID`) REFERENCES `account` (`ID`),
+  CONSTRAINT `homework_teacherid` FOREIGN KEY (`TEACHER_ID`) REFERENCES `account` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='作业';
 
 -- ----------------------------
@@ -222,8 +236,9 @@ DROP TABLE IF EXISTS `paper`;
 CREATE TABLE `paper` (
   `EXAM_ID` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '考试编号',
   `PROBLEM_ID` varchar(32) DEFAULT NULL COMMENT '题目编号',
-  KEY `EXAM_ID` (`EXAM_ID`),
   KEY `PROBLEM_ID` (`PROBLEM_ID`),
+  KEY `exam_id` (`EXAM_ID`),
+  CONSTRAINT `exam_id` FOREIGN KEY (`EXAM_ID`) REFERENCES `exam` (`EXAM_ID`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `paper_ibfk_1` FOREIGN KEY (`EXAM_ID`) REFERENCES `exam` (`EXAM_ID`),
   CONSTRAINT `paper_ibfk_2` FOREIGN KEY (`PROBLEM_ID`) REFERENCES `problem` (`PROBLEM_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='试卷';
@@ -281,7 +296,9 @@ CREATE TABLE `user` (
   `NAME` varchar(60) DEFAULT NULL COMMENT '姓名',
   `SCHOOL_ID` varchar(32) DEFAULT NULL COMMENT '学院编号',
   `AVATAR` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
-  PRIMARY KEY (`WORK_ID`)
+  PRIMARY KEY (`WORK_ID`),
+  KEY `school_id` (`SCHOOL_ID`),
+  CONSTRAINT `school_id` FOREIGN KEY (`SCHOOL_ID`) REFERENCES `school` (`SCHOOL_ID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户';
 
 -- ----------------------------
@@ -302,7 +319,9 @@ CREATE TABLE `video` (
   `CREATED_TIME` date DEFAULT NULL,
   `NAME` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL,
   `SEQ` int DEFAULT NULL,
-  PRIMARY KEY (`VIDEO_ID`)
+  PRIMARY KEY (`VIDEO_ID`),
+  KEY `video_course_id` (`COURSE_ID`),
+  CONSTRAINT `video_course_id` FOREIGN KEY (`COURSE_ID`) REFERENCES `course` (`COURSE_ID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------

@@ -353,7 +353,7 @@ export default {
     //从题库添加
     submit(){
         //this.checkedProblems存的是选中的题号
-      request.post('/exam/paper/addProblem',this.examId,this.checkedProblems).then( res => {
+      request.post('/exam/paper/addProblems',this.examId,this.checkedProblems).then( res => {
         if(res.code === '0'){
           this.$message({
             type: "success",

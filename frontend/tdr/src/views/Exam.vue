@@ -23,7 +23,7 @@
     <el-table-column align="center" label="操作">
       <template #default="scope">
         <el-button  type="primary" v-if="user.userType == 'student'"  @click="enterExam(scope.row)">进入考试</el-button>
-        <el-button v-if="user.userType !== 'student' " @click="editPaper(scope.row.examId)">编辑试卷</el-button>
+       <el-button v-if="user.userType !== 'student' " @click="editPaper(scope.row.examId)">编辑试卷</el-button>
         <el-button v-if="user.userType !== 'student'" @click="findPaper(scope.row.examId)">查看考试结果</el-button>
         <el-popconfirm title="确定删除吗？" @confirm="handleDelete(scope.row.examId)" v-if="user.userType !== 'student'">
           <template #reference>
@@ -92,19 +92,19 @@ export default {
     return {
       options: [
         {
-          value: '60min',
+          value: '1',
           label: '1h',
         },
         {
-          value: '90min',
+          value: '1.5',
           label: '1.5h',
         },
         {
-          value: '120min',
+          value: '2',
           label: '2h',
         },
         {
-          value: '150min',
+          value: '2.5',
           label: '2.5h',
         },
 
@@ -226,6 +226,7 @@ export default {
         }
       })
     },
+
     enterExam(row){
       this.$store.commit('setExamId',row.examId)
       let start = row.createdTime;
@@ -242,6 +243,7 @@ export default {
         }
       })
     },
+
     save() {
          let userStr = sessionStorage.getItem("user") || "{}"
          let user = JSON.parse(userStr)
@@ -270,7 +272,6 @@ export default {
           params: {
             pageNum: this.currentPage,
             pageSize: this.pageSize,
-            search: this.search
           }
         }).then(res => {
           this.loading = false

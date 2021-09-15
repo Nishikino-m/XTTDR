@@ -99,7 +99,7 @@ export default {
     var _this = this; //声明一个变量指向Vue实例this，保证作用域一致
 
     this.timer = setInterval(function() {
-      var t=new Date();
+      var t=endingTime -new Date();
       var year=t.getFullYear(),
           month=t.getMonth()+1,
           day=t.getDate(),
