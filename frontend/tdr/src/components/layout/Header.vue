@@ -7,6 +7,7 @@
     <div style="width: 300px;margin-top: 30px; color:rgba(74,56,155,0.75);font-size: 20px;" @click="ch"> 欢迎登录！
 
       {{ user.id + "(" +usersType[user.userType=="student"? 0:(user.userType=="teacher"?1:2)] +")"}}</div>
+
     <div style="width: 120px ;margin-top: 20px;margin-right: 10px " >
 
           <el-button type="danger" icon="el-icon-back"  @click="$router.push('/login')">Exit</el-button>
@@ -14,6 +15,8 @@
     </div>
 
   </div>
+
+
 </template>
 
 <script>
@@ -24,7 +27,8 @@ export default {
   data() {
     return{
       logoUrl: require("../../assets/title.png"),
-      usersType: ["学生","教师","管理员"]
+      usersType: ["学生","教师","管理员"],
+
     }
 
   },

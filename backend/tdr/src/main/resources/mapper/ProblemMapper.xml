@@ -12,7 +12,7 @@
         where problem_id in (
             select problem_id from paper
             where exam_id = #{id}
-            )
+        )
     </select>
 
 </mapper>

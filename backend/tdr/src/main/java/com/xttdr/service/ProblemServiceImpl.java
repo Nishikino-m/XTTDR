@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 @Service("ProblemServiceImpl")
 public class ProblemServiceImpl implements ProblemService{
@@ -31,13 +30,17 @@ public class ProblemServiceImpl implements ProblemService{
     }
 
     @Override
-    public Result<?> getProblemByExamId(String paperId) {
-        return Result.success(problemMapper.getProblemByPaperId(paperId));
+    public Result<?> getProblemByExamId(String examId) {
+        List<Problem> problems = problemMapper.getProblemByPaperId(examId);
+        for (Problem problem : problems) {
+            problem.setAnswer("");
+        }
+        return Result.success(problems);
     }
 
     @Override
-    public Result<?> getProblemByExamId(Integer pageNum, Integer pageSize, String paperId) {
-        return Result.success(problemMapper.getProblemByPaperId(new Page<Problem>(pageNum,pageSize), paperId));
+    public Result<?> getProblemByExamId(Integer pageNum, Integer pageSize, String examId) {
+        return Result.success(problemMapper.getProblemByPaperId(new Page<Problem>(pageNum,pageSize), examId));
     }
 
     @Override

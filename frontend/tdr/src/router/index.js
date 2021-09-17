@@ -8,32 +8,12 @@ const routes = [
     name: 'Layout',
     component: Layout,
     redirect: "/course",
-   children: [
+    children: [
       {
         path: '/course',
         name: 'course',
         component: () => import('@/views/Course')
       },
-     {
-       path: '/exam',
-       name: 'exam',
-       component: () => import('@/views/Exam')
-     },
-     {
-       path: '/examEditor',
-       name: 'examEditor',
-       component: () => import('@/views/ExamEditor')
-     },
-     {
-       path: '/examPaper',
-       name: 'examPaper',
-       component: () => import('@/views/ExamPaper')
-     },
-     {
-       path: '/findPaper',
-       name: 'findPaper',
-       component: () => import('@/views/FindPaper')
-     },
       {
         path: '/coursePage',
         name: '/coursePage',
@@ -69,13 +49,43 @@ const routes = [
             path: '/coursePage/videoList',
             name: 'videoList',
             component: () => import('@/views/VideoList')
-          },
-         {
-           path: '/statistics',
-           name: 'statistics',
-           component: () => import('@/views/Statistics')
-         },
+          }
         ]
+      },
+      {
+        path: '/exam',
+        name: 'exam',
+        component: () => import('@/views/Exam')
+      },
+      {
+        path: '/editExam',
+        name: 'editExam',
+        component: () => import('@/views/ExamEditor')
+      },
+      {
+        path: '/doExam',
+        name: 'doExam',
+        component: () => import('@/views/ExamEnter')
+      },
+      {
+        path: '/ProblemList',
+        name: 'ProblemList',
+        component: () => import('@/views/ProblemList')
+      },
+      {
+        path: '/statistics',
+        name: 'statistics',
+        component: () => import('@/views/Statistics')
+      },
+      {
+        path: '/manage',
+        name: 'manage',
+        component: () => import('@/views/Manage')
+      },
+      {
+        path: '/school',
+        name: 'school',
+        component: () => import('@/views/School')
       }
     ]
   },
@@ -94,7 +104,6 @@ const routes = [
     name: 'Register',
     component: () => import("@/views/Register")
   },
-
 ]
 
 const router = createRouter({
@@ -103,7 +112,7 @@ const router = createRouter({
 })
 
 // 限制某些页面禁止未登录访问
-let limitPagePath = ["/course","/exam"]
+let limitPagePath = ["/course"]
 
 router.beforeEach((to, from, next) => {
   if (limitPagePath.includes(to.path)) {

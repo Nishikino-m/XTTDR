@@ -1,48 +1,35 @@
 <template>
-  <div class="login"  > <!--  加背景图片-->
-    <div class="login_card" >
-      <div style="font-size: 25px; text-align: center; ">
+  <div class="login" style="width: 100%; height: 100vh; overflow: hidden">
+    <div  class="login_card" style="width: 400px; margin: 50px auto 20px auto">
+      <div style="font-size: 30px; text-align: center; ">
         <img :src="titleUrl" style="width:90%;height: 90%;margin-right: 10%" />
       </div>
-      <el-form ref="form" :model="form" size="small" :rules="rules" style="padding: 0 5%  0  5% ">
-        <el-form-item prop="id" >
-          <el-input  prefix-icon="el-icon-user-solid" v-model="form.id" placeholder="请输入账号"></el-input>
+      <el-form  ref="form" :model="form" size="normal" :rules="rules" style="padding: 0 5%  3%  5% ">
+        <el-form-item prop="id" label="注册ID" class="regItem">
+          <el-input prefix-icon="el-icon-user-solid" v-model="form.id"></el-input>
         </el-form-item>
-        <el-form-item prop="pwd">
-          <el-input prefix-icon="el-icon-lock" v-model="form.pwd" show-password placeholder="请输入密码"></el-input>
+        <el-form-item prop="workId" label="工号" class="regItem">
+          <el-input prefix-icon="el-icon-user-solid" v-model="form.workId"></el-input>
         </el-form-item>
-<!--        <el-form-item prop="checkpwd">-->
-<!--          <el-input prefix-icon="el-icon-lock" v-model="form.pwd" show-password placeholder="请确认密码"></el-input>-->
-<!--        </el-form-item>-->
-        <el-form-item prop="work_id">
-          <el-input prefix-icon="el-icon-lock" v-model="form.work_id"  placeholder="请输入学号"></el-input>
+        <el-form-item prop="pwd" label="密码" class="regItem">
+          <el-input prefix-icon="el-icon-lock" v-model="form.pwd" show-password></el-input>
         </el-form-item>
-        <el-form-item>
-          <div style="display: flex;justify-content: center;">
-            <el-input prefix-icon="el-icon-key"  v-model="form.validCode" style="width: 50%;margin-right: 5%" placeholder="请输入验证码"></el-input>
-            <div class="validCode">
-              <ValidCode @input="createValidCode" />
-            </div>
-          </div>
+        <el-form-item prop="confirm" label="确认密码" class="regItem">
+          <el-input prefix-icon="el-icon-lock" v-model="form.confirm" show-password></el-input>
         </el-form-item>
 
-
-
-        <div style="text-align: center;margin-bottom: 10px">
+        <div style="text-align: center;margin-bottom: 20px">
           <el-radio-group v-model="form.userType" fill="#7858C0">
             <el-radio-button label="student">学生</el-radio-button>
             <el-radio-button label="teacher">教师</el-radio-button>
             <el-radio-button label="admin">管理员</el-radio-button>
           </el-radio-group>
         </div>
-
-
-        <el-form-item >
-          <el-button style="width: 100%;" size="normal"  type="primary" @click="register">注册</el-button>
+        <el-form-item>
+          <el-button style="width: 100%" type="primary" @click="register">注册</el-button>
         </el-form-item>
-        <el-form-item><el-button type="text" style="margin-bottom: 1%" @click="$router.push('/login')" >前往登录 >> </el-button></el-form-item>
+        <el-form-item><el-button type="text" @click="$router.push('/login')">前往登录 >> </el-button></el-form-item>
       </el-form>
-
     </div>
     <div class="footer">
       <p>Copyright© 2021.&nbsp;&nbsp;&nbsp; 学通天地人.&nbsp;&nbsp;All rights reserved.</p>
@@ -52,16 +39,13 @@
 
 <script>
 import request from "@/utils/request";
-import ValidCode from "@/components/ValidCode";
 
 export default {
   name: "Register",
-  components: {
-    ValidCode,
-  },
   data() {
     return {
-      form: {userType: 'student'},
+      titleUrl: require("../assets/title.png"),
+      form: {},
       rules: {
         username: [
           {required: true, message: '请输入用户名', trigger: 'blur'},
@@ -69,47 +53,43 @@ export default {
         password: [
           {required: true, message: '请输入密码', trigger: 'blur'},
         ],
-      },
-      validCode: '',
-      work_id:'',
-      // 加背景图片
-      bg: {
-        backgroundImage: "url(" + require("../assets/bg.jpg") + ")",
-        backgroundRepeat: "no-repeat",
-        backgroundSize: "100% 100%"
-      },
-      titleUrl: require("../assets/title.png"),
+        confirm: [
+          {required: true, message: '请确认密码', trigger: 'blur'},
+        ],
+      }
     }
   },
-  created() {
-    sessionStorage.removeItem("user")
-  },
   methods: {
-    // 接收验证码组件提交的 4位验证码
-    createValidCode(data) {
-      this.validCode = data
-    },
     register() {
-      console.log("register now")
-      console.log(this.form)
+
+      if (this.form.pwd !== this.form.confirm) {
+        this.$message({
+          type: "error",
+          message: '2次密码输入不一致！'
+        })
+        return
+      }
+
       this.$refs['form'].validate((valid) => {
         if (valid) {
-          if (!this.form.validCode) {
-            this.$message.error("请填写验证码")
-            return
+          let account = {
+            id: this.form.id,
+            pwd: this.form.pwd,
+            userType: this.userType,
+            user: {
+              id: this.form.id,
+              workId: this.form.workId,
+              name: '',
+              schoolId: '',
+              avatar: '',
+            }
           }
-          if(this.form.validCode.toLowerCase() !== this.validCode.toLowerCase()) {
-            this.$message.error("验证码错误")
-            return
-          }
-          request.post("/register",this.form).then(res => {
+          request.post("/register", account).then(res => {
             if (res.code === '0') {
-              console.log("code")
               this.$message({
                 type: "success",
                 message: "注册成功"
               })
-              sessionStorage.setItem("user", JSON.stringify(res.data))  // 缓存用户信息
               this.$router.push("/login")  //登录成功之后进行页面的跳转，跳转到主页
             } else {
               this.$message({
@@ -121,16 +101,14 @@ export default {
         }
       })
     }
-  },
+  }
 }
 </script>
 
 <style scoped>
 @import '../assets/css/style.css';
-div >>> .el-input > input{
-  height: 50px;
-  font-family: "ok";
-  font-size: 25px;
+ >>> .el-form-item__label{
+  color: #2d2b38;
+   font-size: 20px;
 }
-
 </style>

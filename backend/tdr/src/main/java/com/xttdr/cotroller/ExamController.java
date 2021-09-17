@@ -44,6 +44,10 @@ public class ExamController extends BaseController{
         return problemService.getProblemByExamId(pageNum, pageSize, examId);
     }
 
+    @GetMapping("/problems/doexam")
+    public Result<?> getProblemListByPaperId(@RequestParam String examId){
+        return problemService.getProblemByExamId(examId);
+    }
     @GetMapping("/problems/teacher")
     public Result<?> getProblemByTeacherId(@RequestParam(defaultValue = "1") Integer pageNum,
                                            @RequestParam(defaultValue = "10") Integer pageSize){
@@ -60,10 +64,14 @@ public class ExamController extends BaseController{
     }
 
     @PostMapping("/problems/add")
-    public Result<?> addProblem(@RequestParam Problem problem,
+    public Result<?> addProblem(@RequestBody Problem problem,
                                 @RequestParam(defaultValue = "") String examId){
+        problem.setCreatedDate(new Date());
+        problem.setTeacherId(getAccountId());
+        problem.setProblemId(IdUtil.fastSimpleUUID());
         Result<?> res = problemService.addProblem(problem);
-        if(res.getCode().equals("-1") && !examId.equals(""))
+        System.out.println(examId+" "+problem.getProblemId());
+        if(res.getCode().equals("0") && !examId.equals(""))
             res = paperService.addProblemById(examId, problem.getProblemId());
         return res;
     }
@@ -97,38 +105,38 @@ public class ExamController extends BaseController{
 
     //考卷相关
     @PostMapping("/paper/addProblem")
-    public Result<?> addProblemToPaper(@RequestParam String paperId, @RequestParam String problemId){
-        if(!getAccountId().equals(examService.getTeacherIdByPaperId(paperId).getData()))
+    public Result<?> addProblemToPaper(@RequestParam String examId, @RequestParam String problemId){
+        if(!getAccountId().equals(examService.getTeacherIdByPaperId(examId).getData()))
             return Result.error("-1","无权限");
-        return paperService.addProblemById(paperId, problemId);
+        return paperService.addProblemById(examId, problemId);
     }
 
     @PostMapping("/paper/addProblems")
-    public Result<?> addProblemsToPaper(@RequestParam String paperId, @RequestParam List<String> problemId){
-        if(!getAccountId().equals(examService.getTeacherIdByPaperId(paperId).getData()))
+    public Result<?> addProblemsToPaper(@RequestParam String examId, @RequestBody List<String> problemId){
+        if(!getAccountId().equals(examService.getTeacherIdByPaperId(examId).getData()))
             return Result.error("-1","无权限");
-        return paperService.addProblemById(paperId, problemId);
+        return paperService.addProblemById(examId, problemId);
     }
 
     @PostMapping("/paper/delete")
-    public Result<?> deleteProblemById(@RequestParam String paperId, @RequestParam String problemId){
-        if(!getAccountId().equals(examService.getTeacherIdByPaperId(paperId).getData()))
+    public Result<?> deleteProblemById(@RequestParam String examId, @RequestParam String problemId){
+        if(!getAccountId().equals(examService.getTeacherIdByPaperId(examId).getData()))
             return Result.error("-1","无权限");
-        return paperService.deleteProblemById(paperId, problemId);
+        return paperService.deleteProblemById(examId, problemId);
     }
 
     @PostMapping("/paper/deleteProblems")
-    public Result<?> deleteProblemsById(@RequestParam String paperId, @RequestParam List<String> problemId){
-        if(!getAccountId().equals(examService.getTeacherIdByPaperId(paperId).getData()))
+    public Result<?> deleteProblemsById(@RequestParam String examId, @RequestParam List<String> problemId){
+        if(!getAccountId().equals(examService.getTeacherIdByPaperId(examId).getData()))
             return Result.error("-1","无权限");
-        return paperService.deleteProblemById(paperId, problemId);
+        return paperService.deleteProblemById(examId, problemId);
     }
 
-    @PostMapping("/paper/delete")
-    public Result<?> deletePaper(@RequestParam String paperId){
-        if(!getAccountId().equals(examService.getTeacherIdByPaperId(paperId).getData()))
+    @PostMapping("/paper/delete/{examId}")
+    public Result<?> deletePaper(@PathVariable String examId){
+        if(!getAccountId().equals(examService.getTeacherIdByPaperId(examId).getData()))
             return Result.error("-1","无权限");
-        return paperService.clearPaperById(paperId);
+        return paperService.clearPaperById(examId);
     }
 
     @GetMapping("/export/{examId}")
@@ -145,6 +153,12 @@ public class ExamController extends BaseController{
 
     //考试相关
 
+    @GetMapping("/examList")
+    public Result<?> getExamList(@RequestParam(defaultValue = "1") Integer pageNum,
+                                 @RequestParam(defaultValue = "10") Integer pageSize){
+        return examService.getExamByUser(pageNum,pageSize,getAccountId());
+    }
+
     @GetMapping("/id/{examId}")
     public Result<?> getExamByExamId(@PathVariable String examId){
         return examService.getExamById(examId);
@@ -160,11 +174,14 @@ public class ExamController extends BaseController{
     }
 
     @PostMapping("/add")
-    public Result<?> addExam(@RequestParam String courseId, @RequestParam String examName,
-                             @RequestParam Date beginTime, @RequestParam String lastTime){
+    public Result<?> addExam(@RequestBody Exam exam){
+        System.out.println(exam);
         String examId = IdUtil.fastSimpleUUID();
-        System.out.println("\n");
-        return examService.addExam(new Exam(examId, examName, "1", new Date(), getAccountId(), beginTime, lastTime));
+        exam.setExamId(examId);
+        exam.setCreatedTime(new Date());
+        exam.setTeacherId(getAccountId());
+        System.out.println("\n"+exam+"\n");
+        return examService.addExam(exam);
     }
 
     @PostMapping("/update")
@@ -190,21 +207,26 @@ public class ExamController extends BaseController{
     @GetMapping("/doExams/all")
     public Result<?> getDoExamByUserId(@RequestParam(defaultValue = "1") Integer pageNum,
                                        @RequestParam(defaultValue = "10") Integer pageSize){
-        return examService.getDoExamByExamId(pageNum, pageSize, getAccountId());
+        return examService.getDoExamByUserId(pageNum, pageSize, getAccountId());
     }
 
     @GetMapping("/doExams/find/{examId}")
     public Result<?> getDoExamByExamId(@RequestParam(defaultValue = "1") Integer pageNum,
                                        @RequestParam(defaultValue = "10") Integer pageSize,
                                        @PathVariable String examId){
-        return examService.getDoExamByUserId(pageNum, pageSize, examId);
+        return examService.getDoExamByExamId(pageNum, pageSize, examId);
     }
 
+    @GetMapping("/doExams/score")
+    public Result<?> getScore(@RequestParam String examId){
+        return examService.getScore(examId,getAccountId());
+    }
 
     @PostMapping("/doExams/judgeScore")
-    public Result<?> submitExam(@RequestParam DoExam doExam, @RequestParam List<String> answer){
-        if(doExam.getScore() > 0)
-            return Result.error("-1","重复提交");
+    public Result<?> submitExam(@RequestParam String examId, @RequestBody List<String> answer){
+        DoExam doExam = new DoExam();
+        doExam.setExamId(examId);
+        doExam.setId(getAccountId());
         return examService.scoreExam(doExam, answer);
     }
 }

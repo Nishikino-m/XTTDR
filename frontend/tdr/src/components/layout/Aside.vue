@@ -13,12 +13,18 @@
               :on-success="handleAvatarSuccess"
               :before-upload="beforeAvatarUpload"
           >
-            <el-avatar v-if="imgUrl" :src="imgUrl" class="avatar" :size="150" shape="circle"/>
-            <el-avatar v-else :size="100" :src="circleUrl"></el-avatar>
+            <el-avatar v-if="imgUrl" :src="imgUrl" class="avatar" :size="120" shape="circle"/>
+            <el-avatar v-else :size="120" :src="circleUrl"></el-avatar>
           </el-upload>
 <!--        显示个人信息的div-->
         <div class="aside-information">
-        {{"name:"+user.id}}
+<!--          <button @click="vis = true">个人信息</button>-->
+
+            <el-tag style="display: block;">ID:{{user.id}}</el-tag>
+            <el-tag style="display: block;">姓名:{{user.user.name}}</el-tag>
+            <el-tag style="display: block;">工号:{{user.user.workId}}</el-tag>
+            <el-tag style="display: block;">学院编号:{{user.schoolId}}</el-tag>
+
         </div>
       </div>
 
@@ -38,8 +44,24 @@
         </el-menu-item-group>
 
       </el-sub-menu>
+      <el-sub-menu index="4" v-if="user.userType === 'admin'">
+        <template #title><i class="el-icon-setting"></i>系统管理</template>
+        <el-menu-item-group>
+          <el-menu-item index="/manage">人员管理</el-menu-item>
+        </el-menu-item-group>
+        <el-menu-item-group>
+          <el-menu-item index="/school">学院管理</el-menu-item>
+        </el-menu-item-group>
+      </el-sub-menu>
     </el-menu>
   </el-aside>
+
+  <el-dialog v-model='vis' title="个人信息">
+    <el-tag style="font-size: xx-large;display: block;margin: 20px">ID:{{user.id}}</el-tag>
+    <el-tag style="font-size: xx-large;display: block;margin: 20px"></el-tag>
+    <el-tag style="font-size: xx-large;display: block;margin: 20px"></el-tag>
+    <el-tag style="font-size: xx-large;display: block;margin: 20px"></el-tag>
+  </el-dialog>
 </template>
 
 <script>
@@ -51,7 +73,7 @@ export default {
   props: ['user'],
   data() {
     return {
-
+      vis: false,
       path: this.$route.path,   // 设置默认高亮的菜单
       circleUrl: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
       imgUrl:this.user.user.avatar,
@@ -146,9 +168,12 @@ export default {
     display: block;
   }
   .aside-information {
-    font-size: smaller;
+    font-size: medium;
     color: rgba(74, 56, 155, 0.83);
     font-family: Consolas;
+    text-align: left;
+    margin-left: 10%;
+    margin-right: 10%;
   }
 
 

@@ -67,12 +67,6 @@ export default {
         ],
       },
       validCode: '',
-      // 加背景图片
-      bg: {
-        backgroundImage: "url(" + require("../assets/bg.jpg") + ")",
-        backgroundRepeat: "no-repeat",
-        backgroundSize: "100% 100%"
-      },
       titleUrl: require("../assets/title.png"),
     }
   },

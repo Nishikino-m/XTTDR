@@ -6,13 +6,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@TableName("doexam")
+@TableName("school")
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class DoExam {
-    private String examId;
-    private String id;
-    private Double score;
+@AllArgsConstructor
+public class School {
+    @TableId("school_id")
+    private String schoolId;
+    private String name;
 }
-

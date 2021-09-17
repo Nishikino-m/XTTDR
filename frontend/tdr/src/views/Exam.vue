@@ -1,33 +1,19 @@
 <template>
-  <div class="exam-page">
-    <el-row :gutter="0" >
-      <el-col :span="6" style="background-color: #ffffff">
-        <el-button v-if="user.userType!=='student'" style="margin: 10px 0;padding: 0 10px;" type="primary" @click="this.dialogVisible = true">新建考试</el-button>
-
-  </el-col>
-
-    <el-col :span="12" style="background-color: #ffffff; " :offset="user.userType!=='student'?6:12">
-      <div style="margin: 10px 0;">
-        <el-input v-model="search" placeholder="请输入关键字" style="width: 30%; margin-left: 30vh" clearable></el-input>
-        <el-button type="primary" style="margin-left: 5px" @click="load">查询课程考试</el-button>
-      </div>
-    </el-col>
-  </el-row>
-    <el-divider></el-divider>
+  <el-button v-if="user.userType!=='student'" style="margin: 10px 0;padding: 0 10px;" type="primary" @click="this.dialogVisible = true">新建考试</el-button>
   <el-table :data="tableData"  v-loading="loading" stripe style="width: 100%; height: 55vh">
     <el-table-column prop="name" align="center" label="考试名" width="240"> </el-table-column>
     <el-table-column prop="courseId" align="center" label="考试课程" width="240"> </el-table-column>
-    <el-table-column prop="createdTime" align="center" label="开考时间" width="240" :formatter="dateFormat"> </el-table-column>
-    <el-table-column prop="lastTime" align="center" label="考试时长" width="90" > </el-table-column>
+    <el-table-column prop="begintime" align="center" label="开考时间" width="240" :formatter="dateFormat"> </el-table-column>
+    <el-table-column prop="lasttime" align="center" label="考试时长" width="90" > </el-table-column>
     <el-table-column prop="teacherId" align="center" label="创建者"> </el-table-column>
     <el-table-column align="center" label="操作">
       <template #default="scope">
-        <el-button  type="primary" v-if="user.userType == 'student'"  @click="enterExam(scope.row)">进入考试</el-button>
-       <el-button v-if="user.userType !== 'student' " @click="editPaper(scope.row.examId)">编辑试卷</el-button>
-        <el-button v-if="user.userType !== 'student'" @click="findPaper(scope.row.examId)">查看考试结果</el-button>
-        <el-popconfirm title="确定删除吗？" @confirm="handleDelete(scope.row.examId)" v-if="user.userType !== 'student'">
+        <el-button  type="primary" v-if="user.userType == 'student' " size="mini" @click="enterExam(scope.row)">考试</el-button>
+        <el-button size="mini" type="primary"  v-if="user.userType !== 'student' " @click="editPaper(scope.row.examId)">编辑</el-button>
+        <el-button size="mini" @click="getScore(scope.row.examId)">结果</el-button>
+        <el-popconfirm title="确定删除吗？"  @confirm="handleDelete(scope.row.examId)" v-if="user.userType !== 'student'">
           <template #reference>
-            <el-button  type="danger">删除考试</el-button>
+            <el-button  type="danger" size="mini">删除</el-button>
           </template>
         </el-popconfirm>
       </template>
@@ -44,24 +30,25 @@
         :total="total">
     </el-pagination>
   </div>
-  </div>
   <el-dialog title="新建考试" v-model="dialogVisible" width="30%">
     <el-form :model="form" label-width="120px">
       <el-form-item label="课程编号">
         <el-input v-model="form.courseId" style="width: 80%"></el-input>
       </el-form-item>
-        <el-form-item label="开考时间">
-          <el-date-picker
-              v-model="form.startTime"
-              type="datetime"
-              placeholder="选择日期时间"
-              :default-time="this.defaultTime"
-          >
-          </el-date-picker>
-
+      <el-form-item label="考试名称">
+        <el-input v-model="form.name" style="width: 80%"></el-input>
+      </el-form-item>
+      <el-form-item label="开考时间">
+        <el-date-picker
+            v-model="form.begintime"
+            type="datetime"
+            placeholder="选择日期时间"
+            :default-time="this.defaultTime"
+        >
+        </el-date-picker>
       </el-form-item>
       <el-form-item label="考试时长">
-        <el-select v-model="form.lastTime" placeholder="请选择">
+        <el-select v-model="form.lasttime" placeholder="请选择">
           <el-option
               v-for="item in options"
               :key="item.value"
@@ -80,35 +67,46 @@
       </span>
     </template>
   </el-dialog>
+  <el-dialog title="考试结果" v-model="vis" width="10%">
+    <el-progress type="dashboard" :percentage="this.score" :color="colors"></el-progress>
+  </el-dialog>
 </template>
 
 <script>
-import request from "@/utils/request";
 import fileDownload from "js-file-download";
+import request from "@/utils/request";
 
 export default {
-  name: "exam",
+  name: "Exam",
   data() {
     return {
+      colors: [
+        {color: '#f56c6c', percentage: 20},
+        {color: '#e6a23c', percentage: 40},
+        {color: '#5cb87a', percentage: 60},
+        {color: '#1989fa', percentage: 80},
+        {color: '#6f7ad3', percentage: 100}
+      ],
       options: [
         {
-          value: '1',
+          value: 1,
           label: '1h',
         },
         {
-          value: '1.5',
+          value: 1.5,
           label: '1.5h',
         },
         {
-          value: '2',
+          value: 2,
           label: '2h',
         },
         {
-          value: '2.5',
+          value: 2.5,
           label: '2.5h',
         },
 
       ],
+      score: 0,
       fileList: [],
       uploadFileList: [],
       user: {},
@@ -124,14 +122,13 @@ export default {
       ids: [],
       isSelect: true,
       courseList:[],//这个是打算记录当前用户拥有课程的数组
+      vis: false
     }
   },
   created() {
     let userStr = sessionStorage.getItem("user")
     this.user = JSON.parse(userStr)
     this.load()
-
-    //希望可以返回该教师所有的课程,然后就可以把课程编号的input改成选择框了
   },
   computed: {
     examId() {
@@ -139,54 +136,27 @@ export default {
     }
   },
   methods: {
-    httpRequest(param) {
-      console.log(param)
-      let fileObj = param.file // 相当于input里取得的files
-      let fd = new FormData()// FormData 对象
-      fd.append('file', fileObj)// 文件对象
-      fd.append('courseId', this.courseId)
-      let url = this.filesUploadUrl
-      let config = {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      }
-      request.post(url, fd, config).then(res=>{
-        if (res.code === '0') {
+    getScore(id){
+      request.get('/exam/doExams/score',{params:{examId: id}}).then( res => {
+        this.score = res.data
+        if(res.code === '-1'){
           this.$message({
-            type: "success",
-            message: "新增成功"
-          })
-          this.fileList=[]
-        } else {
-          this.$message({
-            type: "error",
-            message: res.msg
+            message: res.msg,
+            type: 'error'
           })
         }
-        this.load() // 刷新表格的数据
-      })
-    },
-
-    submitUpload() {
-      this.$refs.upload.submit()
-    },
-    handleRemove(file, fileList) {
-      this.fileList=fileList
-    },
-    handlePreview(file) {
-      console.log(file)
-    },
-    handleChange(file, fileList) {
-      this.fileList = fileList
-    },
-    handleDownload(path,fileName){
-      request.get('/files/download/'+path+fileName, {responseType: 'blob'}).then(res => {
-        fileDownload(res, fileName);
-      }).catch((res)=>{
-            console.log('download error');
+        else{
+          if(this.score === -1){
+            this.$message({
+              message: '您还未参与考试',
+              type: 'error'
+            })
           }
-      )
+          else{
+            this.vis = true
+          }
+        }
+      })
     },
     handleDelete(id){//删除考试
       request.post('/exam/delete/'+id).then(res => {
@@ -205,70 +175,68 @@ export default {
       )
     },
     editPaper(examId){
+      console.log(examId)
       this.$store.commit('setExamId',examId)
-
       this.$router.push({
-
-        name: 'examEditor',
+        name: 'editExam',
         params: {
           examId: examId
         }
       })
     },
-    findPaper(examId){
-      this.$store.commit('setExamId',examId)
-
-      this.$router.push({
-
-        name: 'paperList',
-        params: {
-          examId: examId
-        }
-      })
-    },
-
     enterExam(row){
-      this.$store.commit('setExamId',row.examId)
-      let start = row.createdTime;
-      let timeLength = row.lastTime;
-      var endingTime = start +timeLength*3600;
-      console.log(this.dateFormat2(start))
-      console.log(this.dateFormat2(endingTime))
-      this.$router.push({
-
-        name: 'examPaper',
-        params: {
-          examId: row.examId,
-          endingTime:endingTime
+      request.get('/exam/doExams/score',{params:{examId: row.examId}}).then( res => {
+        this.score = res.data
+        if(res.code === '-1'){
+          this.$message({
+            message: res.msg,
+            type: 'error'
+          })
         }
-      })
-    },
-
-    save() {
-         let userStr = sessionStorage.getItem("user") || "{}"
-         let user = JSON.parse(userStr)
-         this.form.teacherId = user.id
-         //this.form.courseId = this.courseId
-         request.post("/exam/add", this.form).then(res => {//不知道和后端的参数是否对应
-          if (res.code === '0') {
+        else{
+          if(this.score !== -1){
             this.$message({
-              type: "success",
-              message: "新增成功"
-            })
-          } else {
-            this.$message({
-              type: "error",
-              message: res.msg
+              message: '您已参与此考试',
+              type: 'error'
             })
           }
-          this.load() // 刷新表格的数据
-          this.dialogVisible = false  // 关闭弹窗
-        })
+          else{
+            this.$store.commit('setExamId',row.examId)
+            let begintime = row.begintime;
+            let lasttime = row.lasttime;
+            this.$router.push({
+              name: 'doExam',
+              params: {
+                examId: row.examId,
+                lasttime:lasttime,
+                begintime: begintime
+              }
+            })
+          }
+        }
+      })
     },
-    load() {//加载考试列表
+    save() {
+      request.post("/exam/add",this.form).then(res => {
+        if (res.code === '0') {
+          this.$message({
+            type: "success",
+            message: "新增成功"
+          })
+        } else {
+          this.$message({
+            type: "error",
+            message: res.msg
+          })
+        }
+        this.load()
+        this.dialogVisible = false
+      })
+    },
+    load() {
       this.loading = true
-      if(this.user.userType == student){
-        request.get("/exam/doExams/all", {
+      if(this.user.userType === 'student'){
+        request.get("/exam/examList", {
           params: {
             pageNum: this.currentPage,
             pageSize: this.pageSize,
@@ -277,6 +245,7 @@ export default {
           this.loading = false
           this.tableData = res.data.records
           this.total = res.data.total
+          console.log(this.tableData)
         })
       }
       else{
@@ -294,8 +263,6 @@ export default {
       }
 
     },
-
-
     handleSizeChange(pageSize) {   // 改变当前每页的个数触发
       this.pageSize = pageSize
       this.load()
@@ -336,7 +303,6 @@ export default {
           (sec<10?'0'+sec:sec);
       return newTime;
     },
-
   }
 }
 </script>
