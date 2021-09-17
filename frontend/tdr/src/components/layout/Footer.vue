@@ -12,9 +12,9 @@ export default {
 
 <style scoped>
 .footer{
-  padding: 24px 15px;
+  padding: 5px 10px;
   margin: 10px auto 0 auto;
-  font-size: 20px;
+  font-size: 15px;
   color: #8c939d;
   /*width: 1000px;*/
   background-color: rgba(255, 255, 255, 0.41);

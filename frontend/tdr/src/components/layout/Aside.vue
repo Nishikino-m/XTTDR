@@ -1,10 +1,10 @@
 <template>
-  <el-aside width="200px" style="background-color: rgb(238, 241, 246)">
+  <el-aside width="200px" style="background-color: rgb(238, 241, 246);">
     <el-menu :default-openeds="['1']" style="min-height: 100%"
              :default-active="path"
              router
     >
-        <div style="text-align: center;margin-top: 50px">
+        <div style="text-align: center;margin-top: 25px">
           <el-upload
               class="avatar-uploader"
               action=""
@@ -13,7 +13,7 @@
               :on-success="handleAvatarSuccess"
               :before-upload="beforeAvatarUpload"
           >
-            <el-avatar v-if="imgUrl" :src="imgUrl" class="avatar" :size="120" shape="circle"/>
+            <el-avatar v-if="imgUrl" :src="imgUrl" class="avatar" :size="125" shape="circle"/>
             <el-avatar v-else :size="120" :src="circleUrl"></el-avatar>
           </el-upload>
 <!--        显示个人信息的div-->
@@ -39,19 +39,13 @@
       </el-sub-menu>
       <el-sub-menu index="3">
         <template #title><i class="el-icon-setting"></i>学习情况</template>
-        <el-menu-item-group>
           <el-menu-item index="/statistics">查看统计</el-menu-item>
-        </el-menu-item-group>
 
       </el-sub-menu>
       <el-sub-menu index="4" v-if="user.userType === 'admin'">
         <template #title><i class="el-icon-setting"></i>系统管理</template>
-        <el-menu-item-group>
           <el-menu-item index="/manage">人员管理</el-menu-item>
-        </el-menu-item-group>
-        <el-menu-item-group>
           <el-menu-item index="/school">学院管理</el-menu-item>
-        </el-menu-item-group>
       </el-sub-menu>
     </el-menu>
   </el-aside>
