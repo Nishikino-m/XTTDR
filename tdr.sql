@@ -112,7 +112,7 @@ CREATE TABLE `course_material` (
 -- ----------------------------
 -- Records of course_material
 -- ----------------------------
-INSERT INTO `course_material` VALUES ('oakCenter1.png', '1oakCenter1.png', '1', 'H:\\课设一\\TDR\\xttdr\\backend\\tdr/files/1oakCenter1.png', 'teacher', '2021-09-11 10:55:28');
+INSERT INTO `course_material` VALUES ('oakCenter1.png', '1oakCenter1.png', '1', 'http://localhost:9090/files/1oakCenter1.png', 'teacher', '2021-09-11 10:55:28');
 
 -- ----------------------------
 -- Table structure for docourse
