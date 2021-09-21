@@ -13,7 +13,7 @@
               :on-success="handleAvatarSuccess"
               :before-upload="beforeAvatarUpload"
           >
-            <el-avatar v-if="imgUrl" :src="imgUrl" class="avatar" :size="125" shape="circle"/>
+            <el-avatar v-if="this.imgUrl" :src="this.imgUrl" class="avatar" :size="125" shape="circle"/>
             <el-avatar v-else :size="120" :src="circleUrl"></el-avatar>
           </el-upload>
 <!--        显示个人信息的div-->
@@ -74,6 +74,9 @@ export default {
       filesUploadUrl: "http://localhost:9090/courseMaterial/add"
     }
   },
+  created() {
+    console.log(this.imgUrl)
+  },
   methods: {
     handleAvatarSuccess(res, file) {
       this.imgUrl = URL.createObjectURL(file.raw)
@@ -116,13 +119,15 @@ export default {
         }
         this.refreshUser()
       })
+
+
     },
     refreshUser() {
       let userId = JSON.parse(sessionStorage.getItem("user")).id
       request.get("/account/" + userId).then(res => {
         this.$store.commit('setUser',res.data)
         sessionStorage.setItem("user",JSON.stringify(res.data))
-        this.circleUrl = res.data.user.avatar
+        this.imgUrl = res.data.user.avatar
       })
     }
   },

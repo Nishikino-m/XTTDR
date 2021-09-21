@@ -1,5 +1,5 @@
 <template>
-  <el-button type="primary" icon="el-icon-back" @click="backToAll()" >作业列表</el-button>
+  <el-button  icon="el-icon-back" @click="backToAll()" >作业列表</el-button>
   <el-table :data="tableData"  v-loading="loading" stripe style="width: 100%;margin-top: 10px;">
     <el-table-column prop="id" label="学生编号" width="360"> </el-table-column>
     <el-table-column label="操作">

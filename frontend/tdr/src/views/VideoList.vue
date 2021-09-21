@@ -1,4 +1,5 @@
 <template>
+  <el-button  icon="el-icon-back" @click="backToAll()" >返回课程视频</el-button>
   <el-button type="success" @click="upload">上传视频</el-button>
   <el-table :data="tableData"  v-loading="loading" stripe style="width: 100%;margin-top: 10px;">
     <el-table-column prop="name" label="视频名称" width="360"> </el-table-column>
@@ -197,6 +198,14 @@ export default {
           (month<10?'0'+month:month)+'-'+
           (day<10?'0'+day:day);
       return newTime;
+    },
+    backToAll(){
+      this.$router.push({
+        name: '/coursePage/video',
+        params: {
+          examId: this.examId
+        }
+      })
     },
   },
 

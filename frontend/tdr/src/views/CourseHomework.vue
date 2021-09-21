@@ -3,7 +3,7 @@
 
   <el-table :data="tableData"  v-loading="loading" stripe style="width: 100%;margin-top: 10px; height: 60vh">
     <el-table-column prop="name" align="center" label="作业名称" width="240" > </el-table-column>
-    <el-table-column prop="createdTime" align="center" label="起始日期" width="330" :formatter="deadlineFormat"> </el-table-column>
+    <el-table-column prop="createdTime" align="center" label="起始日期" width="330" :formatter="dateFormat"> </el-table-column>
     <el-table-column prop="deadline" align="center" label="结束日期" :formatter="deadlineFormat" width="330"> </el-table-column>
     <el-table-column label="操作" align="center">
       <template #default="scope">

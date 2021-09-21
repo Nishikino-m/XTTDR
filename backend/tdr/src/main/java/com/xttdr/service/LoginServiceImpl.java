@@ -44,7 +44,6 @@ public class LoginServiceImpl implements LoginService{
         QueryWrapper<Account> accountQueryWrapper = new QueryWrapper<>();
         accountQueryWrapper.eq("id", account.getId());
         Account resAccount = accountMapper.selectOne(accountQueryWrapper);
-        //目前没作用
         if(resAccount!=null){
             System.out.println("用户名重复");
             return Result.error("-1", "用户名重复");
@@ -54,6 +53,9 @@ public class LoginServiceImpl implements LoginService{
         User resUser = userMapper.selectOne(userQueryWrapper);
         if(resUser==null){
             return Result.error("-1", "无效学号");
+        }
+        if(resUser.getId().length()>15){
+            return Result.error("-1", "学号已被注册");
         }
         String workId = resUser.getWorkId();
         String role = "";

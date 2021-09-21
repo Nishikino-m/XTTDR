@@ -83,10 +83,11 @@ public class ExamServiceImpl implements ExamService {
     public Result<?> scoreExam(DoExam doExam, List<String> answer) {
         List<String> correct = doExamMapper.getAnswer(doExam.getExamId());
         double score = 0.0;
+        double oneProblem = 100.0/answer.size();
         for(int i = 0; i < answer.size(); i++)
             if(answer.get(i).equals(correct.get(i)))
                 score++;
-        doExam.setScore(score*10.0);
+        doExam.setScore(score*oneProblem);
         QueryWrapper<DoExam> queryWrapper = new QueryWrapper<DoExam>().eq("exam_id", doExam.getExamId()).eq("id",doExam.getId());
         if(doExamMapper.update(doExam, queryWrapper) > 0)
             return Result.success();

@@ -108,8 +108,12 @@ export default {
         this.begintime = Date.parse(res.data.begintime)
         this.lasttime = res.data.lasttime * 3600
         this.curtime = this.lasttime - ((new Date() - this.begintime) / 1000)
+        console.log(this.curtime+"   "+this.lasttime)
         if (this.curtime > this.lasttime) {
           alert('考试时间已超过')
+          this.$router.push({
+            name: 'exam',
+          })
         }
       })
     },
