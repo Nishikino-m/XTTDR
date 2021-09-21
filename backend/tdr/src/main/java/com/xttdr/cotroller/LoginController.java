@@ -22,17 +22,9 @@ public class LoginController {
     }
 
     @PostMapping("/register")
-        public Result<?> register(@RequestBody JsonNode jsonNode) {
-        System.out.println("*******Register*******"+jsonNode.toString());
+        public Result<?> register(@RequestBody Account account) {
+        System.out.println("*******Register*******");
 
-        Account account=new Account();
-        account.setUserType(jsonNode.get("userType").asText());
-        account.setId(jsonNode.get("id").asText());
-        account.setPwd(jsonNode.get("pwd").asText());
-        String work_id = jsonNode.get("work_id").asText();
-        User user=new User();
-        user.setWorkId(work_id);
-        account.setUser(user);
         return loginService.register(account);
     }
 

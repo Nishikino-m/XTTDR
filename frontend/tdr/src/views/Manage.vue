@@ -160,7 +160,7 @@ export default {
       })
     },
     handleDelete(id){
-      request.post('/manage/delete/'+id).then(res => {
+      request.post('/manage/delete',null,{params: {id:id}}).then(res => {
             if(res.code === '0'){
               this.$message({
                 type: "success",

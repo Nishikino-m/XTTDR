@@ -29,15 +29,15 @@
       </div>
 
 
-      <el-sub-menu index="1">
+      <el-sub-menu index="1" v-if="user.userType !== 'admin'">
         <template #title><i class="el-icon-message"></i>课程管理</template>
         <el-menu-item index="/course">所有课程</el-menu-item>
       </el-sub-menu>
-      <el-sub-menu index="2">
+      <el-sub-menu index="2" v-if="user.userType !== 'admin'">
         <template #title><i class="el-icon-menu"></i>考试管理</template>
         <el-menu-item index="/exam">所有考试</el-menu-item>
       </el-sub-menu>
-      <el-sub-menu index="3">
+      <el-sub-menu index="3" v-if="user.userType !== 'admin'">
         <template #title><i class="el-icon-setting"></i>学习情况</template>
           <el-menu-item index="/statistics">查看统计</el-menu-item>
 

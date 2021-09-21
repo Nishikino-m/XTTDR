@@ -26,6 +26,7 @@
         :on-remove="handleRemove"
         :http-request="httpRequest"
         :before-upload="beforeVideoUpload"
+        :on-change="handleChange"
         :file-list="fileList"
         :auto-upload="false"
     >
@@ -43,7 +44,7 @@
       </el-form>
       <span class="dialog-footer">
         <el-button @click="vis = false">取 消</el-button>
-        <el-button type="primary" @click="save">确 定</el-button>
+        <el-button type="primary" @click="save" :disabled=this.dialogVisible >确 定</el-button>
       </span>
     </el-upload>
   </el-dialog>
@@ -76,7 +77,8 @@ export default {
       currentPage: 1,
       pageSize: 10,
       total: 0,
-      tableData: []
+      tableData: [],
+      dialogVisible:true
     }
   },
   computed: {
@@ -108,9 +110,14 @@ export default {
     },
     handleRemove(file, fileList) {
       this.fileList=fileList
+      this.dialogVisible = fileList.length == 0 ? true : false
     },
     handlePreview(file) {
       console.log(file)
+    },
+    handleChange(file, fileList) {
+      this.fileList = fileList
+      this.dialogVisible = fileList.length == 0 ? true : false
     },
     beforeVideoUpload(file) {
       const isMP4 = file.type === 'video/mp4'
@@ -145,6 +152,7 @@ export default {
             message: "提交成功"
           })
           this.fileList=[]
+          this.load()//0920更改，上传后刷新列表
         } else {
           this.$message({
             type: "error",
@@ -156,7 +164,7 @@ export default {
     save(){
       this.$refs.upload.submit()
       this.vis = false
-      this.load()
+
     },
     load() {
       this.loading = true
